@@ -1,0 +1,228 @@
+.admin-patient-management {
+  padding: 20px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-block-end: 30px;
+}
+
+.page-header h1 {
+  font-size: 28px;
+  color: #1f2937;
+  margin: 0;
+}
+
+.filters-section {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-block-end: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.search-box button {
+  padding: 10px 20px;
+  background: #6366f1;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.table-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.admin-table {
+  inline-size: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table thead {
+  background: #f9fafb;
+  border-block-end: 2px solid #e5e7eb;
+}
+
+.admin-table th {
+  padding: 15px;
+  text-align: start;
+  font-weight: 600;
+  color: #374151;
+  font-size: 14px;
+}
+
+.admin-table td {
+  padding: 15px;
+  border-block-end: 1px solid #f3f4f6;
+  font-size: 14px;
+}
+
+.admin-table tbody:hover {
+  background: #f9fafb;
+}
+
+.loading, .no-data {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+}
+
+.blood-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-icon {
+  padding: 6px 8px;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-icon:hover {
+  background: #e5e7eb;
+}
+
+.btn-icon.delete:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  inset-block-end: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  max-inline-size: 600px;
+  inline-size: 90%;
+  max-block-size: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-block-end: 1px solid #e5e7eb;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #1f2937;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  font-size: 24px;
+}
+
+.user-form {
+  padding: 24px;
+}
+
+.form-group {
+  margin-block-end: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-block-end: 8px;
+  font-weight: 500;
+  color: #374151;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  inline-size: 100%;
+  padding: 10px 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-block-start: 24px;
+}
+
+.btn-primary, .btn-secondary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background: #6366f1;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #4f46e5;
+}
+
+.btn-secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.btn-secondary:hover {
+  background: #e5e7eb;
+}

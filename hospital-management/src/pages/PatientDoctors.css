@@ -1,0 +1,226 @@
+.patient-doctors {
+  max-width: 1400px;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  color: #2d3748;
+  margin: 0;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.search-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+}
+
+.search-box input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 0.875rem;
+}
+
+.filters select {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  background: white;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.doctors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.doctor-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.doctor-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.doctor-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.doctor-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.doctor-info h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #2d3748;
+}
+
+.specialization {
+  margin: 0.25rem 0;
+  color: #667eea;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.department {
+  margin: 0;
+  color: #718096;
+  font-size: 0.875rem;
+}
+
+.doctor-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4a5568;
+  font-size: 0.875rem;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-badge.active {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.on-leave {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.inactive {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.availability {
+  margin-bottom: 1rem;
+}
+
+.availability h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  color: #2d3748;
+}
+
+.days {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.day-badge {
+  padding: 0.25rem 0.5rem;
+  background: #f5f7fa;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  color: #4a5568;
+}
+
+.more {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  color: #667eea;
+  font-weight: 600;
+}
+
+.book-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.book-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.book-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 1rem;
+  background: white;
+  border-radius: 0.75rem;
+}
+
+.empty-state svg {
+  color: #cbd5e0;
+  margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+  color: #2d3748;
+  margin: 1rem 0 0.5rem 0;
+}
+
+.empty-state p {
+  color: #718096;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+  }
+
+  .doctors-grid {
+    grid-template-columns: 1fr;
+  }
+}

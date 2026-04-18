@@ -1,0 +1,359 @@
+/* Hospital Management System CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+/* Login Page Styles */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-block-size: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.login-box {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    inline-size: 100%;
+    max-inline-size: 400px;
+}
+
+.login-box h1 {
+    text-align: center;
+    color: #667eea;
+    margin-block-end: 1rem;
+}
+
+.login-box h2 {
+    text-align: center;
+    margin-block-end: 1.5rem;
+    color: #333;
+}
+
+.form-group {
+    margin-block-end: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-block-end: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input {
+    inline-size: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    inline-size: 100%;
+}
+
+.btn-primary:hover {
+    background: #5a6fd8;
+}
+
+.demo-credentials {
+    margin-block-start: 1.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+/* Layout Styles */
+.layout {
+    display: flex;
+    min-block-size: 100vh;
+}
+
+.sidebar {
+    inline-size: 250px;
+    background: #2c3e50;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.sidebar.closed {
+    inline-size: 70px;
+}
+
+.sidebar-header {
+    padding: 1.5rem;
+    border-block-end: 1px solid #34495e;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo-icon {
+    font-size: 1.5rem;
+}
+
+.sidebar-nav {
+    padding: 1rem 0;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    color: #ecf0f1;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.nav-item:hover, .nav-item.active {
+    background: #34495e;
+    color: white;
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.toggle-sidebar {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #2c3e50;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-info {
+    text-align: end;
+}
+
+.user-name {
+    font-weight: 600;
+    display: block;
+}
+
+.user-role {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+}
+
+.btn-logout {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.content {
+    padding: 2rem;
+    flex: 1;
+}
+
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-block-start: 1.5rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.stat-card h3 {
+    color: #7f8c8d;
+    margin-block-end: 0.5rem;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #667eea;
+}
+
+/* Tables */
+.data-table {
+    inline-size: 100%;
+    border-collapse: collapse;
+    margin-block-start: 1rem;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.data-table th, .data-table td {
+    padding: 1rem;
+    text-align: start;
+    border-block-end: 1px solid #eee;
+}
+
+.data-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.data-table tr:hover {
+    background: #f8f9fa;
+}
+
+/* Departments Grid */
+.departments-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-block-start: 1.5rem;
+}
+
+.department-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.department-card h3 {
+    color: #667eea;
+    margin-block-end: 0.5rem;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    inset-inline-start: 0;
+    inset-block-start: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 2rem;
+    border-radius: 10px;
+    inline-size: 90%;
+    max-inline-size: 500px;
+    position: relative;
+}
+
+.close-modal {
+    position: absolute;
+    inset-inline-end: 1rem;
+    inset-block-start: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #aaa;
+}
+
+.close-modal:hover {
+    color: #000;
+}
+
+#modal-fields {
+    margin: 1.5rem 0;
+}
+
+#modal-fields .form-group {
+    margin-block-end: 1rem;
+}
+
+/* Filters */
+.filters {
+    margin: 1rem 0;
+}
+
+.filters select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        block-size: 100vh;
+        z-index: 100;
+        transform: translateX(-100%);
+    }
+    
+    .sidebar.open {
+        transform: translateX(0);
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .data-table {
+        display: block;
+        overflow-x: auto;
+    }
+}

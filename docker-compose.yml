@@ -1,0 +1,53 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: hospital-mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - hospital-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hospital-backend
+    restart: always
+    environment:
+      - PORT=5000
+      - MONGODB_URI=mongodb://admin:admin123@mongodb:27017/hospital-management?authSource=admin
+      - JWT_SECRET=your_jwt_secret_key_change_in_production
+      - NODE_ENV=development
+    ports:
+      - "5001:5000"
+    depends_on:
+      - mongodb
+    networks:
+      - hospital-network
+
+  frontend:
+    build:
+      context: ./hospital-management
+      dockerfile: Dockerfile
+    container_name: hospital-frontend
+    restart: always
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000/api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - hospital-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  hospital-network:

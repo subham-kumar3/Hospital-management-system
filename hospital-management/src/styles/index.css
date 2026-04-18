@@ -1,0 +1,291 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-attachment: fixed;
+  color: #2c3e50;
+}
+
+#root {
+  min-block-size: 100vh;
+}
+
+/* VIP Gold Theme */
+:root {
+  --gold-primary: #d4af37;
+  --gold-light: #f4df89;
+  --gold-dark: #aa8c2c;
+  --purple-rich: #667eea;
+  --purple-deep: #764ba2;
+  --white-premium: #ffffff;
+  --shadow-luxury: 0 10px 40px rgba(0, 0, 0, 0.2);
+  --shadow-gold: 0 5px 30px rgba(212, 175, 55, 0.3);
+  --gradient-vip: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-gold: linear-gradient(135deg, #d4af37 0%, #f4df89 100%);
+}
+
+/* Global button styles - VIP Version */
+button {
+  font-family: inherit;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Luxury Scrollbar */
+::-webkit-scrollbar {
+  inline-size: 10px;
+  block-size: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #d4af37 0%, #f4df89 100%);
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #f4df89 0%, #d4af37 100%);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+/* Utility classes */
+.text-center {
+  text-align: center;
+}
+
+.mt-10 {
+  margin-block-start: 10px;
+}
+
+/* VIP Card Effect */
+.vip-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  box-shadow: var(--shadow-luxury);
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  transition: all 0.3s ease;
+}
+
+.vip-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-gold);
+  border-color: var(--gold-primary);
+}
+
+/* VIP Button Styles */
+.btn-vip-primary {
+  background: var(--gradient-gold);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 50px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-vip-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(212, 175, 55, 0.6);
+}
+
+.btn-vip-primary:active {
+  transform: translateY(0);
+}
+
+/* VIP Input Fields */
+input.vip-input,
+textarea.vip-input,
+select.vip-input {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+input.vip-input:focus,
+textarea.vip-input:focus,
+select.vip-input:focus {
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+  background: white;
+}
+
+/* VIP Table Styling */
+table.vip-table {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: var(--shadow-luxury);
+}
+
+table.vip-table thead {
+  background: var(--gradient-gold);
+  color: white;
+}
+
+table.vip-table tbody tr {
+  border-block-end: 1px solid rgba(212, 175, 55, 0.2);
+  transition: all 0.3s ease;
+}
+
+table.vip-table tbody tr:hover {
+  background: rgba(212, 175, 55, 0.1);
+  transform: scale(1.01);
+}
+
+/* VIP Badge */
+.badge-vip {
+  background: var(--gradient-gold);
+  color: white;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 3px 15px rgba(212, 175, 55, 0.4);
+}
+
+/* Animation for page load */
+@keyframes vipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.vip-animate {
+  animation: vipFadeIn 0.6s ease-out;
+}
+
+/* VIP Loading Spinner */
+.vip-spinner {
+  inline-size: 50px;
+  block-size: 50px;
+  border: 5px solid rgba(212, 175, 55, 0.2);
+  border-block-start: 5px solid var(--gold-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* VIP Alert/Notification */
+.alert-vip {
+  background: var(--gradient-gold);
+  color: white;
+  padding: 15px 25px;
+  border-radius: 10px;
+  box-shadow: 0 5px 25px rgba(212, 175, 55, 0.4);
+  border-inline-start: 5px solid white;
+  animation: vipFadeIn 0.5s ease-out;
+}
+
+/* VIP Modal */
+.modal-vip {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.modal-vip-content {
+  background: white;
+  border-radius: 20px;
+  border: 3px solid var(--gold-primary);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* VIP Navigation */
+.nav-vip {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
+  border-block-end: 3px solid var(--gold-primary);
+}
+
+/* VIP Footer */
+.footer-vip {
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  border-block-start: 3px solid var(--gold-primary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .vip-card {
+    border-radius: 15px;
+  }
+  
+  .btn-vip-primary {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
+.mt-20 {
+  margin-block-start: 20px;
+}
+
+.mb-10 {
+  margin-block-end: 10px;
+}
+
+.mb-20 {
+  margin-block-end: 20px;
+}
+
+/* Animation classes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease;
+}
+
+/* Loading spinner */
+.spinner {
+  border: 3px solid #f3f3f3;
+  border-block-start: 3px solid #3498db;
+  border-radius: 50%;
+  inline-size: 40px;
+  block-size: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

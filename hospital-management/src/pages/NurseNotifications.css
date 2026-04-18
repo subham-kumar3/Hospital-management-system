@@ -1,0 +1,25 @@
+.nurse-notifications { padding: 20px; }
+.page-header { margin-bottom: 30px; }
+.page-header h1 { font-size: 2rem; color: #2c3e50; margin: 0 0 5px 0; }
+.page-header p { color: #7f8c8d; margin: 0; }
+.notif-controls { display: flex; justify-content: space-between; margin-bottom: 20px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.filter-group { display: flex; align-items: center; gap: 10px; }
+.filter-group label { font-weight: 600; color: #2c3e50; }
+.filter-group select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
+.btn-mark-all { display: flex; align-items: center; gap: 8px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+.notifications-list { display: grid; gap: 15px; }
+.notification-card { display: flex; gap: 15px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 4px solid #667eea; }
+.notification-card.emergency { border-left-color: #f44336; background: #ffebee; }
+.notification-card.alert { border-left-color: #ff9800; }
+.notification-card.unread { background: #f8f9fa; }
+.notif-icon { padding: 10px; background: #e3f2fd; border-radius: 50%; height: fit-content; }
+.notification-card.emergency .notif-icon { background: #ffebee; color: #f44336; }
+.notif-content { flex: 1; }
+.notif-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.notif-header h3 { margin: 0; color: #2c3e50; }
+.notif-type { padding: 4px 12px; background: #e3f2fd; color: #1976d2; border-radius: 12px; font-size: 0.85rem; font-weight: 600; }
+.notif-content > p { color: #555; margin: 10px 0; line-height: 1.5; }
+.notif-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+.notif-date { color: #7f8c8d; font-size: 0.9rem; }
+.btn-mark-read { padding: 6px 12px; background: #4caf50; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
+.loading, .empty-state { text-align: center; padding: 40px; color: #7f8c8d; }

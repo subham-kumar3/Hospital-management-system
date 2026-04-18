@@ -1,0 +1,379 @@
+.patient-appointment-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.patient-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.header-left h1 {
+  margin: 0 0 5px 0;
+  font-size: 24px;
+}
+
+.header-left p {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 14px;
+}
+
+.logout-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid white;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.logout-btn:hover {
+  background: white;
+  color: #667eea;
+}
+
+.patient-content {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.action-bar {
+  margin-bottom: 30px;
+}
+
+.book-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.book-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.appointments-section h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 22px;
+}
+
+.no-appointments {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.no-appointments svg {
+  color: #bdc3c7;
+  margin-bottom: 20px;
+}
+
+.no-appointments h3 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.no-appointments p {
+  color: #7f8c8d;
+  margin-bottom: 20px;
+}
+
+.appointments-list {
+  display: grid;
+  gap: 15px;
+}
+
+.appointment-card {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid #667eea;
+  transition: all 0.3s;
+}
+
+.appointment-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.appointment-card.pending {
+  border-left-color: #f39c12;
+}
+
+.appointment-card.confirmed {
+  border-left-color: #27ae60;
+}
+
+.appointment-card.completed {
+  border-left-color: #3498db;
+}
+
+.appointment-card.cancelled {
+  border-left-color: #e74c3c;
+}
+
+.apt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.apt-doctor {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.apt-doctor svg {
+  color: #667eea;
+}
+
+.apt-doctor h3 {
+  margin: 0 0 5px 0;
+  color: #2c3e50;
+  font-size: 18px;
+}
+
+.apt-doctor p {
+  margin: 0;
+  color: #7f8c8d;
+  font-size: 14px;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-badge.pending {
+  background: #fef5e7;
+  color: #f39c12;
+}
+
+.status-badge.confirmed {
+  background: #eafaf1;
+  color: #27ae60;
+}
+
+.status-badge.completed {
+  background: #ebf5fb;
+  color: #3498db;
+}
+
+.status-badge.cancelled {
+  background: #fdedec;
+  color: #e74c3c;
+}
+
+.apt-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #555;
+  font-size: 14px;
+}
+
+.detail-item svg {
+  color: #667eea;
+}
+
+/* Booking Form */
+.booking-form-container {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.form-header h2 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #95a5a6;
+  cursor: pointer;
+  padding: 5px;
+  transition: all 0.3s;
+}
+
+.close-btn:hover {
+  color: #e74c3c;
+}
+
+.booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 15px;
+  transition: all 0.3s;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.cancel-btn {
+  flex: 1;
+  padding: 14px;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: #555;
+}
+
+.cancel-btn:hover {
+  background: #e0e0e0;
+}
+
+.submit-btn {
+  flex: 2;
+  padding: 14px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 18px;
+  color: #667eea;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .patient-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .header-left h1 {
+    font-size: 20px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .booking-form-container {
+    padding: 20px;
+  }
+
+  .apt-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

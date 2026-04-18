@@ -1,0 +1,164 @@
+.lab-samples-page {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.samples-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 12px;
+}
+
+.create-sample-btn {
+  padding: 12px 24px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.create-sample-btn:hover {
+  background: #45a049;
+}
+
+.samples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.sample-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.sample-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.sample-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.sample-header h3 {
+  margin: 0;
+  color: #1a73e8;
+  font-size: 1.2rem;
+}
+
+.collection-status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.collection-status.collected {
+  background: #e8f5e9;
+  color: #4caf50;
+}
+
+.collection-status.not-collected {
+  background: #ffebee;
+  color: #f44336;
+}
+
+.collection-status.pending {
+  background: #fff3e0;
+  color: #ff9800;
+}
+
+.sample-details {
+  margin-bottom: 20px;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-item label {
+  font-weight: 600;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.detail-item span {
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.sample-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.action-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.action-btn.collect {
+  background: #4caf50;
+  color: white;
+}
+
+.action-btn.collect:hover {
+  background: #45a049;
+}
+
+.action-btn.not-collect {
+  background: #f44336;
+  color: white;
+}
+
+.action-btn.not-collect:hover {
+  background: #da190b;
+}
+
+.action-btn.view {
+  background: #1a73e8;
+  color: white;
+}
+
+.action-btn.view:hover {
+  background: #1565c0;
+}
+
+@media (max-width: 768px) {
+  .samples-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .samples-grid {
+    grid-template-columns: 1fr;
+  }
+}

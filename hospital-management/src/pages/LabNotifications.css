@@ -1,0 +1,156 @@
+.lab-notifications-page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.notifications-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 12px;
+}
+
+.mark-all-btn {
+  padding: 12px 24px;
+  background: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.mark-all-btn:hover {
+  background: #1565c0;
+}
+
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.notification-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  gap: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.notification-card:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.notification-card.unread {
+  border-left: 4px solid #1a73e8;
+  background: #e3f2fd;
+}
+
+.notification-card.read {
+  opacity: 0.7;
+}
+
+.notification-icon {
+  font-size: 2rem;
+  min-width: 40px;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.notification-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.priority-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.notification-message {
+  margin: 0 0 12px 0;
+  color: #555;
+  line-height: 1.5;
+}
+
+.notification-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.notification-type {
+  background: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.notification-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 100px;
+}
+
+.notification-actions .action-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.notification-actions .action-btn.mark-read {
+  background: #4caf50;
+  color: white;
+}
+
+.notification-actions .action-btn.mark-read:hover {
+  background: #45a049;
+}
+
+.notification-actions .action-btn.delete {
+  background: #f44336;
+  color: white;
+}
+
+.notification-actions .action-btn.delete:hover {
+  background: #da190b;
+}
+
+@media (max-width: 768px) {
+  .notification-card {
+    flex-direction: column;
+  }
+
+  .notification-actions {
+    flex-direction: row;
+    min-width: auto;
+  }
+
+  .notification-actions .action-btn {
+    flex: 1;
+  }
+}

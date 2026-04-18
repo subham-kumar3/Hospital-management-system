@@ -1,0 +1,108 @@
+.dashboard-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  background: #f9fafb;
+  border-radius: 10px;
+  border-left: 4px solid #6366f1;
+}
+
+.stat-card svg {
+  color: #6366f1;
+}
+
+.stat-card.active {
+  border-left-color: #10b981;
+}
+
+.stat-card.active svg {
+  color: #10b981;
+}
+
+.stat-card.inactive {
+  border-left-color: #6b7280;
+}
+
+.stat-card.inactive svg {
+  color: #6b7280;
+}
+
+.stat-card.locked {
+  border-left-color: #ef4444;
+}
+
+.stat-card.locked svg {
+  color: #ef4444;
+}
+
+.stat-card h3 {
+  margin: 0;
+  font-size: 28px;
+  color: #1f2937;
+}
+
+.stat-card p {
+  margin: 5px 0 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.role-breakdown {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #e5e7eb;
+}
+
+.role-breakdown h4 {
+  margin: 0 0 15px 0;
+  color: #374151;
+  font-size: 16px;
+}
+
+.role-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.role-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background: #f3f4f6;
+  border-radius: 8px;
+}
+
+.role-item span {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.role-item strong {
+  color: #1f2937;
+  font-size: 16px;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+}

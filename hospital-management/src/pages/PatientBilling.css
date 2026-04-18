@@ -1,0 +1,99 @@
+.patient-billing {
+  max-width: 1400px;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  color: #2d3748;
+  margin: 0;
+}
+
+.bills-table-container {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.bills-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.bills-table thead {
+  background: #f7fafc;
+}
+
+.bills-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 0.875rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.bills-table td {
+  padding: 1rem;
+  color: #2d3748;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.status-badge {
+  padding: 0.375rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-badge.paid {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.pending {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-badge.partial {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 1rem;
+  background: white;
+  border-radius: 0.75rem;
+}
+
+.empty-state svg {
+  color: #cbd5e0;
+  margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+  color: #2d3748;
+  margin: 1rem 0 0.5rem 0;
+}
+
+.empty-state p {
+  color: #718096;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .bills-table {
+    font-size: 0.75rem;
+  }
+  
+  .bills-table th,
+  .bills-table td {
+    padding: 0.5rem;
+  }
+}

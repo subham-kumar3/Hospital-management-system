@@ -1,0 +1,123 @@
+.lab-reports-page {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.report-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.report-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.report-header h3 {
+  margin: 0;
+  color: #1a73e8;
+  font-size: 1.1rem;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-badge.final {
+  background: #e8f5e9;
+  color: #4caf50;
+}
+
+.status-badge.draft {
+  background: #fff3e0;
+  color: #ff9800;
+}
+
+.status-badge.revised {
+  background: #e3f2fd;
+  color: #2196f3;
+}
+
+.report-details {
+  margin-bottom: 20px;
+}
+
+.report-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.report-actions .action-btn {
+  flex: 1;
+  min-width: 100px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.report-actions .action-btn.view {
+  background: #1a73e8;
+  color: white;
+}
+
+.report-actions .action-btn.view:hover {
+  background: #1565c0;
+}
+
+.report-actions .action-btn.print {
+  background: #ff9800;
+  color: white;
+}
+
+.report-actions .action-btn.print:hover {
+  background: #f57c00;
+}
+
+.report-actions .action-btn.download {
+  background: #4caf50;
+  color: white;
+}
+
+.report-actions .action-btn.download:hover {
+  background: #45a049;
+}
+
+@media (max-width: 768px) {
+  .reports-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .report-actions {
+    flex-direction: column;
+  }
+
+  .report-actions .action-btn {
+    width: 100%;
+  }
+}

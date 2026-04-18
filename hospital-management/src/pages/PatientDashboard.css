@@ -1,0 +1,370 @@
+.patient-dashboard {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.dashboard-header {
+  margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+  font-size: 2rem;
+  color: #2d3748;
+  margin: 0 0 0.5rem 0;
+}
+
+.dashboard-header p {
+  color: #718096;
+  margin: 0;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.stat-card.appointments .stat-icon {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.stat-card.prescriptions .stat-icon {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.stat-card.bills .stat-icon {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.stat-card.visits .stat-icon {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.stat-info h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0 0 0.25rem 0;
+}
+
+.stat-info p {
+  color: #718096;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+/* Quick Actions */
+.quick-actions {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+.quick-actions h2 {
+  font-size: 1.25rem;
+  color: #2d3748;
+  margin: 0 0 1rem 0;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* Dashboard Sections */
+.dashboard-section {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+  font-size: 1.25rem;
+  color: #2d3748;
+  margin: 0;
+}
+
+.view-all-btn {
+  background: none;
+  border: 1px solid #667eea;
+  color: #667eea;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.view-all-btn:hover {
+  background: #667eea;
+  color: white;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #a0aec0;
+}
+
+.empty-state svg {
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-state p {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.book-btn {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.book-btn:hover {
+  background: #5568d3;
+}
+
+/* Appointments List */
+.appointments-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.appointment-card {
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.appointment-card:hover {
+  border-color: #667eea;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+}
+
+.apt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.apt-doctor {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.apt-doctor h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #2d3748;
+}
+
+.apt-doctor p {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.875rem;
+  color: #718096;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-badge.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.confirmed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.completed {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.status-badge.cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.apt-details {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4a5568;
+  font-size: 0.875rem;
+}
+
+/* Prescriptions List */
+.prescriptions-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.prescription-card {
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.prescription-card:hover {
+  border-color: #667eea;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+}
+
+.rx-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.rx-doctor {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.rx-doctor h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #2d3748;
+}
+
+.rx-doctor p {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.875rem;
+  color: #718096;
+}
+
+.rx-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.rx-details p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #4a5568;
+}
+
+/* Loading and Error States */
+.loading, .error {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.125rem;
+}
+
+.loading {
+  color: #667eea;
+}
+
+.error {
+  color: #e53e3e;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .apt-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
