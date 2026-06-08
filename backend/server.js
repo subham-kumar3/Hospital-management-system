@@ -32,8 +32,13 @@ const io = initializeSocket(server);
 // 1. CORS middleware - must be before routes
 app.use(cors(corsOptions));
 
-// 2. Explicit preflight handler for OPTIONS requests
-app.options('*', cors(corsOptions));
+// 2. Handle ALL preflight requests safely
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  next();
+});
 
 // 3. Body parsing middleware
 app.use(express.json());
