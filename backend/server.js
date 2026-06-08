@@ -33,7 +33,7 @@ const io = initializeSocket(server);
 app.use(cors(corsOptions));
 
 // 2. Explicit preflight handler for OPTIONS requests
-app.options('*', cors(corsOptions));
+app.options('/*', cors(corsOptions));
 
 // 3. Body parsing middleware
 app.use(express.json());
