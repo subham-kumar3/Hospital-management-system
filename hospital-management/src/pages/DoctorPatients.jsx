@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Users, Search, User, Phone, Mail, Calendar, Activity, FileText } from 'lucide-react'
-import axios from 'axios'
+import api from '../services/api'
+import { patientService } from '../services'
+import { onPatientUpdate } from '../services/socketService'
 import './DoctorPatients.css'
 
 const DoctorPatients = () => {
@@ -13,6 +15,16 @@ const DoctorPatients = () => {
     const userData = JSON.parse(localStorage.getItem('user') || '{}')
     setDoctor(userData)
     fetchPatients()
+    
+    // Setup real-time listener for patients
+    const cleanup = onPatientUpdate((data) => {
+      console.log('🔄 Doctor Patients: Real-time update:', data.action)
+      fetchPatients()
+    })
+    
+    return () => {
+      if (cleanup) cleanup()
+    }
   }, [])
 
   const fetchPatients = async () => {
@@ -23,7 +35,7 @@ const DoctorPatients = () => {
       }
 
       // Fetch all patients
-      const response = await axios.get('http://localhost:5001/api/patients', config)
+      const response = await api.get('/patients', config)
       
       if (response.data.success) {
         // In real app, filter by doctor's patients

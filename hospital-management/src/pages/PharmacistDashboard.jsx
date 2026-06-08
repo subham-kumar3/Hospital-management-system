@@ -11,6 +11,7 @@ import {
   Package
 } from 'lucide-react'
 import { medicineAPI, prescriptionAPI, billAPI } from '../services/pharmacyApi'
+import { onDashboardUpdate } from '../services/socketService'
 import './Dashboard.css'
 
 const PharmacistDashboard = () => {
@@ -27,8 +28,16 @@ const PharmacistDashboard = () => {
 
   useEffect(() => {
     loadDashboardData()
-    const interval = setInterval(loadDashboardData, 60000)
-    return () => clearInterval(interval)
+    
+    // Setup real-time listeners
+    const cleanup = onDashboardUpdate((data) => {
+      console.log('🔄 Pharmacist: Real-time update:', data.data.type)
+      loadDashboardData()
+    })
+    
+    return () => {
+      if (cleanup) cleanup()
+    }
   }, [])
 
   const loadDashboardData = async () => {

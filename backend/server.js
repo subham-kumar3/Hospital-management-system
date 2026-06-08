@@ -3,9 +3,14 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const http = require('http');
 const connectDB = require('./config/db');
+const { corsOptions } = require('./config/cors');
 const { initializeSocket } = require('./services/socketService');
 
-// Load env vars
+// Load env vars (.env.local overrides, then mode-specific, then .env)
+const nodeEnv = process.env.NODE_ENV || 'development';
+dotenv.config({ path: `.env.${nodeEnv}.local` });
+dotenv.config({ path: `.env.${nodeEnv}` });
+dotenv.config({ path: '.env.local' });
 dotenv.config();
 
 // Connect to database
@@ -21,7 +26,7 @@ const server = http.createServer(app);
 const io = initializeSocket(server);
 
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -37,6 +42,8 @@ app.use('/api/patient', require('./routes/patientPortalRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/pharmacy', require('./routes/pharmacyRoutes'));
 app.use('/api/nurse', require('./routes/nurseRoutes'));
+app.use('/api/nurse/tasks', require('./routes/nurseTaskRoutes'));
+app.use('/api/nurse/lab-reports', require('./routes/nurseLabRoutes'));
 app.use('/api/vitals', require('./routes/vitalRoutes'));
 app.use('/api/medications', require('./routes/medicationLogRoutes'));
 app.use('/api/nurse-notes', require('./routes/nurseNoteRoutes'));
@@ -48,6 +55,7 @@ app.use('/api/inventory', require('./routes/inventoryRoutes'));
 app.use('/api/lab-admin', require('./routes/labAdminRoutes'));
 app.use('/api/export', require('./routes/exportRoutes'));
 app.use('/api/settings', require('./routes/settingsRoutes'));
+app.use('/api/medical-records', require('./routes/medicalRecordRoutes'));
 
 // Health check route
 app.get('/api/health', (req, res) => {
@@ -81,9 +89,17 @@ app.get('/api/socket-status', (req, res) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ 
-    success: false, 
-    message: 'Something went wrong!',
+
+  if (err.message?.startsWith('CORS blocked')) {
+    return res.status(403).json({
+      success: false,
+      message: 'Origin not allowed by CORS policy'
+    });
+  }
+
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || 'Something went wrong!',
     error: process.env.NODE_ENV === 'development' ? err.message : undefined
   });
 });
@@ -95,8 +111,11 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-server.listen(PORT, () => {
-  console.log(`🚀 Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
   console.log(`🔌 Real-time WebSocket server is active`);
-  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`📊 Health check: /api/health`);
+  if (process.env.FRONTEND_URL) {
+    console.log(`🌐 Allowed frontend origins: ${process.env.FRONTEND_URL}`);
+  }
 });

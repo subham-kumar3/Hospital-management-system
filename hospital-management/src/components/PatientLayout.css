@@ -138,14 +138,29 @@
   overflow-y: auto;
 }
 
+.sidebar-overlay {
+  display: none;
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    backdrop-filter: blur(2px);
+  }
+
   .patient-sidebar {
     position: fixed;
     left: 0;
     top: 0;
     height: 100vh;
+    height: 100dvh;
     z-index: 1000;
+    width: 260px;
     transform: translateX(-100%);
   }
 
@@ -155,6 +170,12 @@
 
   .patient-sidebar.closed {
     transform: translateX(-100%);
+    width: 260px;
+  }
+
+  .main-content {
+    width: 100%;
+    min-width: 0;
   }
 
   .top-header {
@@ -165,7 +186,7 @@
     padding: 1rem;
   }
 
-  .user-info {
+  .header-right .user-info {
     display: none;
   }
 }

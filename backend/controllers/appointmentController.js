@@ -1,4 +1,5 @@
 const Appointment = require('../models/Appointment');
+const { emitAppointmentUpdate } = require('../services/socketService');
 
 // @desc    Get all appointments
 // @route   GET /api/appointments
@@ -84,6 +85,9 @@ const createAppointment = async (req, res) => {
       .populate('patient', 'name email phone bloodGroup age')
       .populate('doctor', 'name specialization department email phone');
     
+    // Emit real-time event
+    emitAppointmentUpdate('created', populated);
+    
     res.status(201).json({ 
       success: true, 
       data: {
@@ -122,6 +126,9 @@ const updateAppointment = async (req, res) => {
     if (!appointment) {
       return res.status(404).json({ success: false, message: 'Appointment not found' });
     }
+    
+    // Emit real-time event
+    emitAppointmentUpdate('updated', appointment);
     
     // Format response
     const formattedAppointment = {

@@ -105,3 +105,40 @@ export const changePassword = async (data) => {
   const response = await api.put('/nurse/change-password', data);
   return response.data;
 };
+
+// Task Management APIs
+export const getTasks = async (params = {}) => {
+  const response = await api.get('/nurse/tasks', { params });
+  return response.data;
+};
+
+export const getTaskStats = async () => {
+  const response = await api.get('/nurse/tasks/stats');
+  return response.data;
+};
+
+export const createTask = async (data) => {
+  const response = await api.post('/nurse/tasks', data);
+  return response.data;
+};
+
+export const updateTask = async (taskId, data) => {
+  const response = await api.put(`/nurse/tasks/${taskId}`, data);
+  return response.data;
+};
+
+export const deleteTask = async (taskId) => {
+  const response = await api.delete(`/nurse/tasks/${taskId}`);
+  return response.data;
+};
+
+// Lab Reports APIs
+export const getNurseLabReports = async (params = {}) => {
+  const response = await api.get('/nurse/lab-reports', { params });
+  return response.data;
+};
+
+export const getNurseLabReport = async (reportId) => {
+  const response = await api.get(`/nurse/lab-reports/${reportId}`);
+  return response.data;
+};

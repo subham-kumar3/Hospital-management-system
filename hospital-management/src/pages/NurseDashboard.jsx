@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Users, Activity, Pill, AlertCircle } from 'lucide-react'
+import { Users, Activity, Pill, AlertCircle, BedDouble, ClipboardList } from 'lucide-react'
 import { getNurseDashboard } from '../services/nurseApi'
+import { onAppointmentUpdate, onPatientUpdate } from '../services/socketService'
 import './NurseDashboard.css'
 
 const NurseDashboard = () => {
@@ -11,6 +12,22 @@ const NurseDashboard = () => {
 
   useEffect(() => {
     fetchDashboardData()
+    
+    // Setup real-time listeners
+    const cleanupAppointment = onAppointmentUpdate((data) => {
+      console.log('🔄 Nurse: Real-time appointment update:', data.action)
+      fetchDashboardData()
+    })
+    
+    const cleanupPatient = onPatientUpdate((data) => {
+      console.log('🔄 Nurse: Real-time patient update:', data.action)
+      fetchDashboardData()
+    })
+    
+    return () => {
+      if (cleanupAppointment) cleanupAppointment()
+      if (cleanupPatient) cleanupPatient()
+    }
   }, [])
 
   const fetchDashboardData = async () => {
@@ -50,6 +67,36 @@ const NurseDashboard = () => {
           </div>
         </div>
 
+        <div className="stat-card info">
+          <div className="stat-icon">
+            <BedDouble size={32} />
+          </div>
+          <div className="stat-info">
+            <h3>{dashboardData?.patientsInWard || 0}</h3>
+            <p>Patients in Ward</p>
+          </div>
+        </div>
+
+        <div className="stat-card danger">
+          <div className="stat-icon">
+            <AlertCircle size={32} />
+          </div>
+          <div className="stat-info">
+            <h3>{dashboardData?.criticalPatients || 0}</h3>
+            <p>Critical Patients</p>
+          </div>
+        </div>
+
+        <div className="stat-card warning">
+          <div className="stat-icon">
+            <ClipboardList size={32} />
+          </div>
+          <div className="stat-info">
+            <h3>{dashboardData?.pendingTasks || 0}</h3>
+            <p>Tasks Pending</p>
+          </div>
+        </div>
+
         <div className="stat-card success">
           <div className="stat-icon">
             <Activity size={32} />
@@ -57,16 +104,6 @@ const NurseDashboard = () => {
           <div className="stat-info">
             <h3>{dashboardData?.vitalsRecordedToday || 0}</h3>
             <p>Vitals Recorded Today</p>
-          </div>
-        </div>
-
-        <div className="stat-card warning">
-          <div className="stat-icon">
-            <Pill size={32} />
-          </div>
-          <div className="stat-info">
-            <h3>{dashboardData?.pendingMedications || 0}</h3>
-            <p>Pending Medications</p>
           </div>
         </div>
 

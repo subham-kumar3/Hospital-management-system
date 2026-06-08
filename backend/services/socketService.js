@@ -1,5 +1,6 @@
 const { Server } = require('socket.io');
 const jwt = require('jsonwebtoken');
+const { getSocketCorsOrigins } = require('../config/cors');
 
 let io;
 
@@ -9,7 +10,7 @@ const connectedUsers = new Map();
 const initializeSocket = (server) => {
   io = new Server(server, {
     cors: {
-      origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+      origin: getSocketCorsOrigins(),
       methods: ['GET', 'POST'],
       credentials: true
     },

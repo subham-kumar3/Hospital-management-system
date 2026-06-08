@@ -1,5 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { authService } from '../services';
+import { getApiErrorMessage } from '../utils/apiErrors';
+import { initializeSocket, disconnectSocket } from '../services/socketService';
 
 const AuthContext = createContext(null);
 
@@ -25,6 +27,7 @@ export const AuthProvider = ({ children }) => {
       const userData = JSON.parse(storedUser);
       setUser(userData);
       setIsAuthenticated(true);
+      initializeSocket(token);
     }
     setLoading(false);
   }, []);
@@ -35,14 +38,18 @@ export const AuthProvider = ({ children }) => {
       if (response.success) {
         setUser(response.data)
         setIsAuthenticated(true)
+        const token = localStorage.getItem('token')
+        if (token) {
+          initializeSocket(token)
+        }
         return { success: true, data: response.data }
       }
       return { success: false, message: 'Login failed' }
     } catch (error) {
       console.error('Login error:', error)
-      return { 
-        success: false, 
-        message: error.response?.data?.message || error.message || 'Login failed' 
+      return {
+        success: false,
+        message: getApiErrorMessage(error, 'Login failed. Please try again.')
       }
     }
   }
@@ -57,14 +64,15 @@ export const AuthProvider = ({ children }) => {
       }
       return { success: false, message: 'Registration failed' };
     } catch (error) {
-      return { 
-        success: false, 
-        message: error.response?.data?.message || 'Registration failed' 
+      return {
+        success: false,
+        message: getApiErrorMessage(error, 'Registration failed. Please try again.')
       };
     }
   };
 
   const logout = () => {
+    disconnectSocket();
     authService.logout();
     setUser(null);
     setIsAuthenticated(false);

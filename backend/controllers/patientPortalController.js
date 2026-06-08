@@ -8,8 +8,28 @@ const Notification = require('../models/Notification');
 const Doctor = require('../models/Doctor');
 
 // Helper function to get patient record from user
-const getPatientByUserId = async (userId) => {
-  return await Patient.findOne({ user: userId });
+const getPatientByUserId = async (userId, userEmail) => {
+  let patient = await Patient.findOne({ user: userId });
+
+  if (!patient && userEmail) {
+    const normalizedEmail = userEmail.toLowerCase();
+    const altEmail = normalizedEmail.replace(/^patient\./, '');
+
+    patient = await Patient.findOne({
+      $or: [
+        { email: normalizedEmail },
+        { email: altEmail },
+        { name: new RegExp(userEmail.split('@')[0].replace('patient.', ''), 'i') }
+      ]
+    });
+
+    if (patient && !patient.user) {
+      patient.user = userId;
+      await patient.save();
+    }
+  }
+
+  return patient;
 };
 
 // @desc    Get patient dashboard data
@@ -17,7 +37,7 @@ const getPatientByUserId = async (userId) => {
 // @access  Private (Patient only)
 const getPatientDashboard = async (req, res) => {
   try {
-    const patient = await getPatientByUserId(req.user.id);
+    const patient = await getPatientByUserId(req.user.id, req.user.email);
     if (!patient) {
       return res.status(404).json({ success: false, message: 'Patient profile not found' });
     }
@@ -78,7 +98,7 @@ const getPatientDashboard = async (req, res) => {
 // @access  Private (Patient only)
 const getPatientAppointments = async (req, res) => {
   try {
-    const patient = await getPatientByUserId(req.user.id);
+    const patient = await getPatientByUserId(req.user.id, req.user.email);
     if (!patient) {
       return res.status(404).json({ success: false, message: 'Patient profile not found' });
     }
@@ -100,7 +120,7 @@ const getPatientAppointments = async (req, res) => {
 // @access  Private (Patient only)
 const bookAppointment = async (req, res) => {
   try {
-    const patient = await getPatientByUserId(req.user.id);
+    const patient = await getPatientByUserId(req.user.id, req.user.email);
     if (!patient) {
       return res.status(404).json({ success: false, message: 'Patient profile not found' });
     }
@@ -154,7 +174,7 @@ const bookAppointment = async (req, res) => {
 // @access  Private (Patient only)
 const cancelAppointment = async (req, res) => {
   try {
-    const patient = await getPatientByUserId(req.user.id);
+    const patient = await getPatientByUserId(req.user.id, req.user.email);
     if (!patient) {
       return res.status(404).json({ success: false, message: 'Patient profile not found' });
     }
@@ -182,7 +202,7 @@ const cancelAppointment = async (req, res) => {
 // @access  Private (Patient only)
 const rescheduleAppointment = async (req, res) => {
   try {
-    const patient = await getPatientByUserId(req.user.id);
+    const patient = await getPatientByUserId(req.user.id, req.user.email);
     if (!patient) {
       return res.status(404).json({ success: false, message: 'Patient profile not found' });
     }
@@ -226,7 +246,7 @@ const rescheduleAppointment = async (req, res) => {
 // @access  Private (Patient only)
 const getPatientPrescriptions = async (req, res) => {
   try {
-    const patient = await getPatientByUserId(req.user.id);
+    const patient = await getPatientByUserId(req.user.id, req.user.email);
     if (!patient) {
       return res.status(404).json({ success: false, message: 'Patient profile not found' });
     }
@@ -249,7 +269,7 @@ const getPatientPrescriptions = async (req, res) => {
 // @access  Private (Patient only)
 const getPatientMedicalRecords = async (req, res) => {
   try {
-    const patient = await getPatientByUserId(req.user.id);
+    const patient = await getPatientByUserId(req.user.id, req.user.email);
     if (!patient) {
       return res.status(404).json({ success: false, message: 'Patient profile not found' });
     }
@@ -271,7 +291,7 @@ const getPatientMedicalRecords = async (req, res) => {
 // @access  Private (Patient only)
 const getPatientBills = async (req, res) => {
   try {
-    const patient = await getPatientByUserId(req.user.id);
+    const patient = await getPatientByUserId(req.user.id, req.user.email);
     if (!patient) {
       return res.status(404).json({ success: false, message: 'Patient profile not found' });
     }
@@ -293,7 +313,7 @@ const getPatientBills = async (req, res) => {
 // @access  Private (Patient only)
 const getPatientProfile = async (req, res) => {
   try {
-    const patient = await getPatientByUserId(req.user.id);
+    const patient = await getPatientByUserId(req.user.id, req.user.email);
     if (!patient) {
       return res.status(404).json({ success: false, message: 'Patient profile not found' });
     }
@@ -317,7 +337,7 @@ const getPatientProfile = async (req, res) => {
 // @access  Private (Patient only)
 const updatePatientProfile = async (req, res) => {
   try {
-    const patient = await getPatientByUserId(req.user.id);
+    const patient = await getPatientByUserId(req.user.id, req.user.email);
     if (!patient) {
       return res.status(404).json({ success: false, message: 'Patient profile not found' });
     }
@@ -396,7 +416,7 @@ const changePassword = async (req, res) => {
 // @access  Private (Patient only)
 const getNotifications = async (req, res) => {
   try {
-    const patient = await getPatientByUserId(req.user.id);
+    const patient = await getPatientByUserId(req.user.id, req.user.email);
     if (!patient) {
       return res.status(404).json({ success: false, message: 'Patient profile not found' });
     }
@@ -422,7 +442,7 @@ const getNotifications = async (req, res) => {
 // @access  Private (Patient only)
 const markNotificationRead = async (req, res) => {
   try {
-    const patient = await getPatientByUserId(req.user.id);
+    const patient = await getPatientByUserId(req.user.id, req.user.email);
     if (!patient) {
       return res.status(404).json({ success: false, message: 'Patient profile not found' });
     }

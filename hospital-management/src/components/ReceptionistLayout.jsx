@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useSidebar } from '../hooks/useSidebar'
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import { 
   LayoutDashboard, 
@@ -20,7 +21,7 @@ import { notificationService } from '../services'
 import './ReceptionistLayout.css'
 
 const ReceptionistLayout = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const { sidebarOpen, toggleSidebar, closeSidebar, isMobile } = useSidebar()
   const [unreadCount, setUnreadCount] = useState(0)
   const location = useLocation()
   const navigate = useNavigate()
@@ -62,6 +63,7 @@ const ReceptionistLayout = () => {
 
   return (
     <div className="layout">
+      {isMobile && sidebarOpen && <div className="sidebar-overlay" onClick={closeSidebar} />}
       <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
         <div className="sidebar-header">
           <h1 className="logo">
@@ -80,6 +82,7 @@ const ReceptionistLayout = () => {
                 key={item.path}
                 to={item.path}
                 className={`nav-item ${isActive ? 'active' : ''}`}
+                onClick={closeSidebar}
               >
                 <Icon size={20} />
                 {sidebarOpen && <span>{item.label}</span>}
@@ -93,7 +96,7 @@ const ReceptionistLayout = () => {
         <header className="top-header">
           <button 
             className="toggle-sidebar"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
+            onClick={toggleSidebar}
           >
             {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
           </button>

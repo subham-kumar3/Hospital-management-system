@@ -1,50 +1,203 @@
 import React, { useState, useEffect } from 'react'
-import { Clock } from 'lucide-react'
-import { doctorService } from '../services'
+import { Calendar, Clock, User, MapPin, Search, Filter } from 'lucide-react'
+import { doctorService, departmentService } from '../services'
+import './DoctorSchedule.css'
 
 const DoctorSchedule = () => {
   const [doctors, setDoctors] = useState([])
+  const [departments, setDepartments] = useState([])
   const [loading, setLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedDepartment, setSelectedDepartment] = useState('all')
+  const [selectedDoctor, setSelectedDoctor] = useState(null)
 
   useEffect(() => {
-    fetchDoctors()
+    fetchData()
   }, [])
 
-  const fetchDoctors = async () => {
+  const fetchData = async () => {
     try {
-      const response = await doctorService.getAllDoctors()
-      if (response.success) setDoctors(response.data)
+      const [doctorsRes, departmentsRes] = await Promise.all([
+        doctorService.getAllDoctors(),
+        departmentService.getAllDepartments()
+      ])
+      
+      if (doctorsRes.success) {
+        setDoctors(doctorsRes.data)
+      }
+      if (departmentsRes.success) {
+        setDepartments(departmentsRes.data)
+      }
     } catch (error) {
-      console.error('Error:', error)
+      console.error('Error fetching data:', error)
     } finally {
       setLoading(false)
     }
   }
 
-  return (
-    <div style={{ padding: '20px', background: '#f5f6fa', minHeight: '100vh' }}>
-      <h1 style={{ fontSize: '2rem', color: '#2c3e50', marginBottom: '30px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <Clock size={32} /> Doctor Schedule
-      </h1>
+  const filteredDoctors = doctors.filter(doctor => {
+    const matchesSearch = doctor.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      doctor.specialization?.toLowerCase().includes(searchTerm.toLowerCase())
+    
+    const matchesDepartment = selectedDepartment === 'all' || 
+      doctor.department === selectedDepartment
+    
+    return matchesSearch && matchesDepartment
+  })
 
-      {loading ? <p>Loading...</p> : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
-          {doctors.map(doctor => (
-            <div key={doctor._id} style={{ background: 'white', borderRadius: '12px', padding: '25px', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}>
-              <h3 style={{ margin: '0 0 10px', color: '#2c3e50' }}>{doctor.name}</h3>
-              <p style={{ color: '#7f8c8d', margin: '5px 0' }}><strong>Specialization:</strong> {doctor.specialization}</p>
-              <p style={{ color: '#7f8c8d', margin: '5px 0' }}><strong>Department:</strong> {doctor.department}</p>
-              <p style={{ color: '#7f8c8d', margin: '5px 0' }}><strong>Experience:</strong> {doctor.experience} years</p>
-              <p style={{ color: '#7f8c8d', margin: '5px 0' }}><strong>Fee:</strong> ₹{doctor.consultationFee}</p>
-              <p style={{ margin: '10px 0 5px' }}>
-                <span style={{ padding: '4px 12px', borderRadius: '12px', background: doctor.status === 'Active' ? '#d4edda' : '#f8d7da', color: doctor.status === 'Active' ? '#155724' : '#721c24', fontWeight: '600' }}>
-                  {doctor.status}
-                </span>
-              </p>
-            </div>
-          ))}
+  const getDaySchedule = (doctor) => {
+    const schedule = doctor.schedule || {}
+    return Object.entries(schedule).map(([day, hours]) => ({
+      day,
+      ...hours,
+      isAvailable: hours.available !== false
+    }))
+  }
+
+  const formatTime = (time) => {
+    if (!time) return 'N/A'
+    return time
+  }
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading schedules...</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="doctor-schedule-page">
+      <div className="schedule-header">
+        <div>
+          <h1>
+            <Calendar size={28} />
+            Doctor Schedules
+          </h1>
+          <p className="subtitle">View and manage doctor availability</p>
         </div>
-      )}
+      </div>
+
+      <div className="schedule-controls">
+        <div className="search-box">
+          <Search size={18} />
+          <input
+            type="text"
+            placeholder="Search by doctor name or specialization..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
+        <div className="filter-box">
+          <Filter size={18} />
+          <select
+            value={selectedDepartment}
+            onChange={(e) => setSelectedDepartment(e.target.value)}
+          >
+            <option value="all">All Departments</option>
+            {departments.map(dept => (
+              <option key={dept._id} value={dept.name}>
+                {dept.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="schedule-stats">
+        <div className="stat-card">
+          <h3>{doctors.length}</h3>
+          <p>Total Doctors</p>
+        </div>
+        <div className="stat-card">
+          <h3>{filteredDoctors.length}</h3>
+          <p>Showing</p>
+        </div>
+        <div className="stat-card">
+          <h3>{departments.length}</h3>
+          <p>Departments</p>
+        </div>
+      </div>
+
+      <div className="doctors-grid">
+        {filteredDoctors.length > 0 ? (
+          filteredDoctors.map(doctor => (
+            <div
+              key={doctor._id}
+              className={`doctor-card ${selectedDoctor?._id === doctor._id ? 'selected' : ''}`}
+              onClick={() => setSelectedDoctor(selectedDoctor?._id === doctor._id ? null : doctor)}
+            >
+              <div className="doctor-header">
+                <div className="doctor-avatar">
+                  <User size={32} />
+                </div>
+                <div className="doctor-info">
+                  <h3>Dr. {doctor.name}</h3>
+                  <p className="specialization">{doctor.specialization}</p>
+                  <span className="department-badge">{doctor.department}</span>
+                </div>
+              </div>
+
+              <div className="doctor-details">
+                <div className="detail-item">
+                  <MapPin size={16} />
+                  <span>Room {doctor.room || 'N/A'}</span>
+                </div>
+                <div className="detail-item">
+                  <Clock size={16} />
+                  <span>
+                    {doctor.experience ? `${doctor.experience} years exp.` : 'N/A'}
+                  </span>
+                </div>
+              </div>
+
+              {selectedDoctor?._id === doctor._id && (
+                <div className="schedule-details">
+                  <h4>Weekly Schedule</h4>
+                  <div className="schedule-grid">
+                    {getDaySchedule(doctor).map((daySchedule, index) => (
+                      <div
+                        key={index}
+                        className={`day-card ${daySchedule.isAvailable ? 'available' : 'unavailable'}`}
+                      >
+                        <div className="day-header">
+                          <h5>{daySchedule.day}</h5>
+                          <span className={`status-badge ${daySchedule.isAvailable ? 'available' : 'unavailable'}`}>
+                            {daySchedule.isAvailable ? 'Available' : 'Off'}
+                          </span>
+                        </div>
+                        {daySchedule.isAvailable && daySchedule.startTime && daySchedule.endTime && (
+                          <div className="day-hours">
+                            <Clock size={14} />
+                            <span>
+                              {formatTime(daySchedule.startTime)} - {formatTime(daySchedule.endTime)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="card-footer">
+                <button className="btn-view-schedule">
+                  {selectedDoctor?._id === doctor._id ? 'Hide Schedule' : 'View Schedule'}
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="empty-state">
+            <Calendar size={64} />
+            <h3>No doctors found</h3>
+            <p>Try adjusting your search or filters</p>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

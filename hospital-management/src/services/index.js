@@ -298,6 +298,12 @@ export const enquiryService = {
 };
 
 export const notificationService = {
+  // Get all notifications
+  getAllNotifications: async () => {
+    const response = await api.get('/notifications');
+    return response.data;
+  },
+
   // Get user notifications
   getUserNotifications: async () => {
     const response = await api.get('/notifications');
@@ -319,6 +325,44 @@ export const notificationService = {
   // Get unread count
   getUnreadCount: async () => {
     const response = await api.get('/notifications/unread-count');
+    return response.data;
+  },
+
+  // Delete notification
+  deleteNotification: async (id) => {
+    const response = await api.delete(`/notifications/${id}`);
+    return response.data;
+  }
+};
+
+export const departmentService = {
+  // Get all departments
+  getAllDepartments: async () => {
+    const response = await api.get('/departments');
+    return response.data;
+  },
+
+  // Get single department
+  getDepartment: async (id) => {
+    const response = await api.get(`/departments/${id}`);
+    return response.data;
+  },
+
+  // Create department
+  createDepartment: async (departmentData) => {
+    const response = await api.post('/departments', departmentData);
+    return response.data;
+  },
+
+  // Update department
+  updateDepartment: async (id, departmentData) => {
+    const response = await api.put(`/departments/${id}`, departmentData);
+    return response.data;
+  },
+
+  // Delete department
+  deleteDepartment: async (id) => {
+    const response = await api.delete(`/departments/${id}`);
     return response.data;
   }
 };
@@ -547,6 +591,155 @@ export const settingsService = {
 
   getActivityLogs: async (params = {}) => {
     const response = await api.get('/settings/activity-logs', { params });
+    return response.data;
+  }
+};
+
+export const doctorPortalService = {
+  // Dashboard
+  getDashboard: async () => {
+    const response = await api.get('/doctor-portal/dashboard');
+    return response.data;
+  },
+
+  // Appointments
+  getAppointments: async (params = {}) => {
+    const response = await api.get('/doctor-portal/appointments', { params });
+    return response.data;
+  },
+
+  updateAppointmentStatus: async (id, statusData) => {
+    const response = await api.put(`/doctor-portal/appointments/${id}`, statusData);
+    return response.data;
+  },
+
+  // Patients
+  getPatients: async (params = {}) => {
+    const response = await api.get('/doctor-portal/patients', { params });
+    return response.data;
+  },
+
+  getPatientDetails: async (id) => {
+    const response = await api.get(`/doctor-portal/patients/${id}`);
+    return response.data;
+  },
+
+  // Prescriptions
+  createPrescription: async (prescriptionData) => {
+    const response = await api.post('/doctor-portal/prescriptions', prescriptionData);
+    return response.data;
+  },
+
+  updatePrescription: async (id, prescriptionData) => {
+    const response = await api.put(`/doctor-portal/prescriptions/${id}`, prescriptionData);
+    return response.data;
+  },
+
+  // Lab Tests
+  orderLabTest: async (labTestData) => {
+    const response = await api.post('/doctor-portal/lab-tests', labTestData);
+    return response.data;
+  },
+
+  getLabTests: async (params = {}) => {
+    const response = await api.get('/doctor-portal/lab-tests', { params });
+    return response.data;
+  },
+
+  // Notes
+  createNote: async (noteData) => {
+    const response = await api.post('/doctor-portal/notes', noteData);
+    return response.data;
+  },
+
+  getNotes: async (patientId) => {
+    const response = await api.get(`/doctor-portal/notes/patient/${patientId}`);
+    return response.data;
+  },
+
+  updateNote: async (id, noteData) => {
+    const response = await api.put(`/doctor-portal/notes/${id}`, noteData);
+    return response.data;
+  },
+
+  // Notifications
+  getNotifications: async (params = {}) => {
+    const response = await api.get('/doctor-portal/notifications', { params });
+    return response.data;
+  },
+
+  markNotificationRead: async (id) => {
+    const response = await api.put(`/doctor-portal/notifications/${id}/read`);
+    return response.data;
+  }
+};
+
+export const medicalRecordService = {
+  // Create medical record
+  createMedicalRecord: async (recordData) => {
+    const response = await api.post('/medical-records', recordData);
+    return response.data;
+  },
+
+  // Get medical records by patient
+  getRecordsByPatient: async (patientId) => {
+    const response = await api.get(`/medical-records/patient/${patientId}`);
+    return response.data;
+  },
+
+  // Get medical records by doctor
+  getRecordsByDoctor: async (doctorId) => {
+    const response = await api.get(`/medical-records/doctor/${doctorId}`);
+    return response.data;
+  },
+
+  // Get single medical record
+  getMedicalRecord: async (id) => {
+    const response = await api.get(`/medical-records/${id}`);
+    return response.data;
+  },
+
+  // Update medical record
+  updateMedicalRecord: async (id, recordData) => {
+    const response = await api.put(`/medical-records/${id}`, recordData);
+    return response.data;
+  },
+
+  // Delete medical record
+  deleteMedicalRecord: async (id) => {
+    const response = await api.delete(`/medical-records/${id}`);
+    return response.data;
+  },
+
+  // Add symptoms
+  addSymptoms: async (id, symptoms) => {
+    const response = await api.post(`/medical-records/${id}/symptoms`, { symptoms });
+    return response.data;
+  },
+
+  // Add notes
+  addNotes: async (id, notes) => {
+    const response = await api.post(`/medical-records/${id}/notes`, { notes });
+    return response.data;
+  }
+};
+
+export const labReportService = {
+  // Get all lab reports for doctor's patients
+  getLabReports: async (params = {}) => {
+    const response = await api.get('/lab/reports', { params });
+    return response.data;
+  },
+
+  // Get lab report by ID
+  getLabReport: async (id) => {
+    const response = await api.get(`/lab/reports/${id}`);
+    return response.data;
+  },
+
+  // Get lab reports by patient
+  getReportsByPatient: async (patientId) => {
+    const response = await api.get(`/lab/reports/patient/${patientId}`);
     return response.data;
   }
 };

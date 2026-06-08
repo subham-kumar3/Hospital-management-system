@@ -1,6 +1,5 @@
 import { io } from 'socket.io-client';
-
-const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { getSocketUrl } from '../config/apiConfig';
 
 let socket = null;
 
@@ -9,7 +8,7 @@ export const initializeSocket = (token) => {
     socket.disconnect();
   }
 
-  socket = io(SOCKET_URL, {
+  socket = io(getSocketUrl(), {
     auth: { token },
     transports: ['websocket', 'polling'],
     reconnection: true,

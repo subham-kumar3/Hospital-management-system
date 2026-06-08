@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useSidebar } from '../hooks/useSidebar'
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import { 
   LayoutDashboard, 
@@ -11,12 +12,14 @@ import {
   User,
   Menu,
   X,
-  LogOut
+  LogOut,
+  CheckSquare,
+  FlaskConical
 } from 'lucide-react'
 import './Layout.css'
 
 const NurseLayout = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const { sidebarOpen, toggleSidebar, closeSidebar, isMobile } = useSidebar()
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -35,6 +38,8 @@ const NurseLayout = () => {
     { path: '/nurse-vitals', icon: Activity, label: 'Vitals' },
     { path: '/nurse-medications', icon: Pill, label: 'Medications' },
     { path: '/nurse-notes', icon: FileText, label: 'Notes' },
+    { path: '/nurse-tasks', icon: CheckSquare, label: 'Tasks' },
+    { path: '/nurse-lab-reports', icon: FlaskConical, label: 'Lab Reports' },
     { path: '/nurse-ward', icon: Bed, label: 'Ward Management' },
     { path: '/nurse-notifications', icon: Bell, label: 'Notifications' },
     { path: '/nurse-profile', icon: User, label: 'Profile' },
@@ -42,6 +47,7 @@ const NurseLayout = () => {
 
   return (
     <div className="layout">
+      {isMobile && sidebarOpen && <div className="sidebar-overlay" onClick={closeSidebar} />}
       <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
         <div className="sidebar-header">
           <h1 className="logo">
@@ -60,6 +66,7 @@ const NurseLayout = () => {
                 key={item.path}
                 to={item.path}
                 className={`nav-item ${isActive ? 'active' : ''}`}
+                onClick={closeSidebar}
               >
                 <Icon size={20} />
                 {sidebarOpen && <span>{item.label}</span>}
@@ -73,7 +80,7 @@ const NurseLayout = () => {
         <header className="top-header">
           <button 
             className="toggle-sidebar"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
+            onClick={toggleSidebar}
           >
             {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
           </button>

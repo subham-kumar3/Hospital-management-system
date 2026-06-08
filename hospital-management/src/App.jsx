@@ -40,7 +40,10 @@ import AdminUserManagement from './pages/AdminUserManagement'
 import DoctorDashboard from './pages/DoctorDashboard'
 import DoctorAppointments from './pages/DoctorAppointments'
 import DoctorPatients from './pages/DoctorPatients'
-import DoctorReports from './pages/DoctorReports'
+import DoctorPrescriptions from './pages/DoctorPrescriptions'
+import DoctorMedicalRecords from './pages/DoctorMedicalRecords'
+import DoctorLabReports from './pages/DoctorLabReports'
+import DoctorNotifications from './pages/DoctorNotifications'
 import DoctorProfile from './pages/DoctorProfile'
 import ReceptionistDashboard from './pages/ReceptionistDashboard'
 import PatientRegistration from './pages/PatientRegistration'
@@ -73,9 +76,12 @@ import NursePatients from './pages/NursePatients'
 import NurseVitals from './pages/NurseVitals'
 import NurseMedications from './pages/NurseMedications'
 import NurseNotes from './pages/NurseNotes'
+import NurseTasks from './pages/NurseTasks'
+import NurseLabReports from './pages/NurseLabReports'
 import NurseWardManagement from './pages/NurseWardManagement'
 import NurseNotifications from './pages/NurseNotifications'
 import NurseProfile from './pages/NurseProfile'
+import NotFound from './pages/NotFound'
 
 // Protected Route Component with role-based access
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -138,6 +144,13 @@ function AppRoutes() {
       
       {/* Default route redirects to login */}
       <Route path="/" element={<Navigate to="/login" replace />} />
+
+      {/* Legacy route redirects */}
+      <Route path="/appointments" element={<Navigate to="/login" replace />} />
+      <Route path="/patients" element={<Navigate to="/admin/patients" replace />} />
+      <Route path="/doctors" element={<Navigate to="/login" replace />} />
+      <Route path="/departments" element={<Navigate to="/login" replace />} />
+      <Route path="/medical-records" element={<Navigate to="/login" replace />} />
       
       {/* Doctor Routes with DoctorLayout */}
       <Route 
@@ -150,7 +163,10 @@ function AppRoutes() {
         <Route path="doctor-dashboard" element={<DoctorDashboard />} />
         <Route path="doctor-appointments" element={<DoctorAppointments />} />
         <Route path="doctor-patients" element={<DoctorPatients />} />
-        <Route path="doctor-reports" element={<DoctorReports />} />
+        <Route path="doctor-prescriptions" element={<DoctorPrescriptions />} />
+        <Route path="doctor-medical-records" element={<DoctorMedicalRecords />} />
+        <Route path="doctor-lab-reports" element={<DoctorLabReports />} />
+        <Route path="doctor-notifications" element={<DoctorNotifications />} />
         <Route path="doctor-profile" element={<DoctorProfile />} />
       </Route>
       
@@ -246,10 +262,15 @@ function AppRoutes() {
         <Route path="nurse-vitals" element={<NurseVitals />} />
         <Route path="nurse-medications" element={<NurseMedications />} />
         <Route path="nurse-notes" element={<NurseNotes />} />
+        <Route path="nurse-tasks" element={<NurseTasks />} />
+        <Route path="nurse-lab-reports" element={<NurseLabReports />} />
         <Route path="nurse-ward" element={<NurseWardManagement />} />
         <Route path="nurse-notifications" element={<NurseNotifications />} />
         <Route path="nurse-profile" element={<NurseProfile />} />
       </Route>
+
+      {/* 404 - catch all unmatched routes */}
+      <Route path="*" element={<NotFound />} />
     </Routes>
   )
 }

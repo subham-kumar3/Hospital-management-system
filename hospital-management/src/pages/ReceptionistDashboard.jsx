@@ -1,22 +1,63 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Calendar, UserPlus, DollarSign, Clock, TrendingUp } from 'lucide-react'
+import { 
+  Calendar, 
+  UserPlus, 
+  DollarSign, 
+  Clock, 
+  TrendingUp, 
+  Users,
+  MessageSquare,
+  Bell,
+  Activity,
+  ChevronRight,
+  Plus,
+  Search,
+  Filter
+} from 'lucide-react'
 import { appointmentService, patientService, billService, enquiryService } from '../services'
+import { onAppointmentUpdate, onPatientUpdate, onDashboardUpdate, getSocket } from '../services/socketService'
 import './ReceptionistDashboard.css'
 
 const ReceptionistDashboard = () => {
   const [stats, setStats] = useState({
+    totalPatients: 0,
     todayAppointments: 0,
-    newPatients: 0,
-    todayBills: 0,
-    pendingPayments: 0
+    pendingBills: 0,
+    totalEnquiries: 0
   })
   const [todayAppointments, setTodayAppointments] = useState([])
   const [recentEnquiries, setRecentEnquiries] = useState([])
+  const [recentPatients, setRecentPatients] = useState([])
+  const [pendingBillsList, setPendingBillsList] = useState([])
   const [loading, setLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     fetchDashboardData()
+    
+    // Setup real-time listeners
+    const cleanupAppointment = onAppointmentUpdate((data) => {
+      console.log('🔄 Real-time appointment update:', data.action)
+      fetchDashboardData() // Refresh all data
+    })
+    
+    const cleanupPatient = onPatientUpdate((data) => {
+      console.log('🔄 Real-time patient update:', data.action)
+      fetchDashboardData() // Refresh all data
+    })
+    
+    const cleanupDashboard = onDashboardUpdate((data) => {
+      console.log('🔄 Real-time dashboard update:', data.data.type)
+      fetchDashboardData() // Refresh all data
+    })
+    
+    // Cleanup listeners on unmount
+    return () => {
+      if (cleanupAppointment) cleanupAppointment()
+      if (cleanupPatient) cleanupPatient()
+      if (cleanupDashboard) cleanupDashboard()
+    }
   }, [])
 
   const fetchDashboardData = async () => {
@@ -26,9 +67,14 @@ const ReceptionistDashboard = () => {
       today.setHours(0, 0, 0, 0)
       const todayStr = today.toISOString().split('T')[0]
       
-      console.log('📅 Fetching appointments for:', todayStr)
-      
-      // Fetch all appointments and filter for today
+      // Fetch total patients
+      const patientsResponse = await patientService.getAllPatients()
+      if (patientsResponse.success) {
+        setStats(prev => ({ ...prev, totalPatients: patientsResponse.data.length }))
+        setRecentPatients(patientsResponse.data.slice(0, 5))
+      }
+
+      // Fetch today's appointments
       const aptResponse = await appointmentService.getAllAppointments()
       if (aptResponse.success) {
         const todayAppointmentsList = aptResponse.data.filter(apt => {
@@ -38,20 +84,8 @@ const ReceptionistDashboard = () => {
           return aptDate.getTime() === today.getTime()
         })
         
-        console.log('📊 Total appointments:', aptResponse.data.length)
-        console.log('📊 Today\'s appointments:', todayAppointmentsList.length, todayAppointmentsList)
-        
         setTodayAppointments(todayAppointmentsList)
         setStats(prev => ({ ...prev, todayAppointments: todayAppointmentsList.length }))
-      }
-
-      // Fetch all patients and filter today's
-      const patientsResponse = await patientService.getAllPatients()
-      if (patientsResponse.success) {
-        const todayPatients = patientsResponse.data.filter(p => {
-          return new Date(p.createdAt).toISOString().split('T')[0] === todayStr
-        })
-        setStats(prev => ({ ...prev, newPatients: todayPatients.length }))
       }
 
       // Fetch billing stats
@@ -59,15 +93,24 @@ const ReceptionistDashboard = () => {
       if (billingResponse.success) {
         setStats(prev => ({ 
           ...prev, 
-          todayBills: billingResponse.data.today.count,
-          pendingPayments: billingResponse.data.overall.pendingBills || 0
+          pendingBills: billingResponse.data.overall.pendingBills || 0
         }))
+      }
+
+      // Fetch all bills to show pending ones
+      const allBillsResponse = await billService.getAllBills()
+      if (allBillsResponse.success) {
+        const pending = allBillsResponse.data
+          .filter(bill => bill.paymentStatus !== 'Paid')
+          .slice(0, 5)
+        setPendingBillsList(pending)
       }
 
       // Fetch recent enquiries
       const enquiryResponse = await enquiryService.getAllEnquiries()
       if (enquiryResponse.success) {
         setRecentEnquiries(enquiryResponse.data.slice(0, 5))
+        setStats(prev => ({ ...prev, totalEnquiries: enquiryResponse.data.length }))
       }
     } catch (error) {
       console.error('❌ Error fetching dashboard data:', error)
@@ -76,56 +119,100 @@ const ReceptionistDashboard = () => {
     }
   }
 
+  const filteredAppointments = todayAppointments.filter(apt => 
+    apt.patient?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    apt.doctor?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
   if (loading) {
-    return <div className="loading">Loading dashboard...</div>
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading dashboard...</p>
+      </div>
+    )
   }
 
   return (
     <div className="receptionist-dashboard">
+      {/* Dashboard Header */}
       <div className="dashboard-header">
-        <h1>Receptionist Dashboard</h1>
-        <p className="date">{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        <div className="header-content">
+          <div>
+            <h1>Welcome back! 👋</h1>
+            <p className="date">
+              {new Date().toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}
+            </p>
+          </div>
+          <div className="header-actions">
+            <Link to="/patient-registration" className="btn-primary">
+              <Plus size={18} />
+              <span>New Patient</span>
+            </Link>
+            <Link to="/receptionist-appointments" className="btn-secondary">
+              <Calendar size={18} />
+              <span>Book Appointment</span>
+            </Link>
+          </div>
+        </div>
       </div>
 
       {/* Stats Cards */}
       <div className="stats-grid">
         <div className="stat-card blue">
           <div className="stat-icon">
-            <Calendar size={32} />
+            <Users size={28} />
           </div>
           <div className="stat-info">
-            <h3>{stats.todayAppointments}</h3>
-            <p>Today's Appointments</p>
+            <h3>{stats.totalPatients}</h3>
+            <p>Total Patients</p>
+            <span className="stat-trend positive">
+              <TrendingUp size={14} /> +12% this month
+            </span>
           </div>
         </div>
 
         <div className="stat-card green">
           <div className="stat-icon">
-            <UserPlus size={32} />
+            <Calendar size={28} />
           </div>
           <div className="stat-info">
-            <h3>{stats.newPatients}</h3>
-            <p>New Patients Today</p>
+            <h3>{stats.todayAppointments}</h3>
+            <p>Today's Appointments</p>
+            <span className="stat-trend">
+              <Activity size={14} /> {todayAppointments.filter(a => a.status === 'Confirmed').length} confirmed
+            </span>
           </div>
         </div>
 
         <div className="stat-card orange">
           <div className="stat-icon">
-            <DollarSign size={32} />
+            <DollarSign size={28} />
           </div>
           <div className="stat-info">
-            <h3>{stats.todayBills}</h3>
-            <p>Bills Generated Today</p>
+            <h3>{stats.pendingBills}</h3>
+            <p>Pending Bills</p>
+            <span className="stat-trend negative">
+              Action needed
+            </span>
           </div>
         </div>
 
-        <div className="stat-card red">
+        <div className="stat-card purple">
           <div className="stat-icon">
-            <TrendingUp size={32} />
+            <MessageSquare size={28} />
           </div>
           <div className="stat-info">
-            <h3>{stats.pendingPayments}</h3>
-            <p>Pending Payments</p>
+            <h3>{stats.totalEnquiries}</h3>
+            <p>Total Enquiries</p>
+            <span className="stat-trend">
+              <Bell size={14} /> {recentEnquiries.filter(e => e.status === 'New').length} new
+            </span>
           </div>
         </div>
       </div>
@@ -136,7 +223,7 @@ const ReceptionistDashboard = () => {
         <div className="actions-grid">
           <Link to="/patient-registration" className="action-btn primary">
             <UserPlus size={24} />
-            <span>Add Patient</span>
+            <span>Patient Registration</span>
           </Link>
           <Link to="/receptionist-appointments" className="action-btn success">
             <Calendar size={24} />
@@ -148,90 +235,207 @@ const ReceptionistDashboard = () => {
           </Link>
           <Link to="/doctor-schedule" className="action-btn info">
             <Clock size={24} />
-            <span>View Doctor Schedule</span>
+            <span>Doctor Schedule</span>
+          </Link>
+          <Link to="/enquiries" className="action-btn secondary">
+            <MessageSquare size={24} />
+            <span>View Enquiries</span>
+          </Link>
+          <Link to="/notifications" className="action-btn accent">
+            <Bell size={24} />
+            <span>Notifications</span>
           </Link>
         </div>
       </div>
 
-      {/* Today's Appointments */}
-      <div className="section">
-        <div className="section-header">
-          <h2>Today's Appointments</h2>
-          <Link to="/receptionist-appointments" className="view-all">View All</Link>
-        </div>
-        {todayAppointments.length > 0 ? (
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>Patient</th>
-                <th>Doctor</th>
-                <th>Department</th>
-                <th>Type</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {todayAppointments.map(apt => (
-                <tr key={apt._id}>
-                  <td>{apt.time}</td>
-                  <td>{apt.patient?.name || 'Unknown'}</td>
-                  <td>{apt.doctor?.name || 'Unknown'}</td>
-                  <td>{apt.department}</td>
-                  <td>{apt.type}</td>
-                  <td>
-                    <span className={`status-badge ${apt.status.toLowerCase()}`}>
-                      {apt.status}
-                    </span>
-                  </td>
-                </tr>
+      {/* Main Content Grid */}
+      <div className="main-grid">
+        {/* Today's Appointments */}
+        <div className="section appointments-section">
+          <div className="section-header">
+            <div>
+              <h2>Today's Appointments</h2>
+              <p className="section-subtitle">
+                {todayAppointments.length} appointment{todayAppointments.length !== 1 ? 's' : ''} scheduled
+              </p>
+            </div>
+            <div className="header-actions-group">
+              <div className="search-box">
+                <Search size={18} />
+                <input 
+                  type="text" 
+                  placeholder="Search..." 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <Link to="/receptionist-appointments" className="view-all">
+                View All
+                <ChevronRight size={16} />
+              </Link>
+            </div>
+          </div>
+          
+          {filteredAppointments.length > 0 ? (
+            <div className="appointments-list">
+              {filteredAppointments.map(apt => (
+                <div key={apt._id} className="appointment-card">
+                  <div className="appointment-time">
+                    <Clock size={16} />
+                    <span>{apt.time}</span>
+                  </div>
+                  <div className="appointment-details">
+                    <h4>{apt.patient?.name || 'Unknown Patient'}</h4>
+                    <p>Dr. {apt.doctor?.name || 'Unknown'}</p>
+                    <span className="department-tag">{apt.department}</span>
+                  </div>
+                  <span className={`status-badge ${apt.status.toLowerCase().replace(' ', '-')}`}>
+                    {apt.status}
+                  </span>
+                </div>
               ))}
-            </tbody>
-          </table>
-        ) : (
-          <p className="no-data">No appointments scheduled for today</p>
-        )}
-      </div>
-
-      {/* Recent Enquiries */}
-      <div className="section">
-        <div className="section-header">
-          <h2>Recent Enquiries</h2>
-          <Link to="/enquiries" className="view-all">View All</Link>
+            </div>
+          ) : (
+            <div className="empty-state">
+              <Calendar size={48} />
+              <p>No appointments scheduled for today</p>
+              <Link to="/receptionist-appointments" className="btn-link">
+                Book an appointment
+              </Link>
+            </div>
+          )}
         </div>
-        {recentEnquiries.length > 0 ? (
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Subject</th>
-                <th>Priority</th>
-                <th>Status</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentEnquiries.map(enquiry => (
-                <tr key={enquiry._id}>
-                  <td>{enquiry.name}</td>
-                  <td>{enquiry.subject}</td>
-                  <td>
-                    <span className={`priority-badge ${enquiry.priority.toLowerCase()}`}>
-                      {enquiry.priority}
-                    </span>
-                  </td>
-                  <td>
+
+        {/* Right Column */}
+        <div className="right-column">
+          {/* Pending Bills */}
+          <div className="section bills-section">
+            <div className="section-header">
+              <div>
+                <h2>Pending Bills</h2>
+                <p className="section-subtitle">Requires attention</p>
+              </div>
+              <Link to="/billing" className="view-all">
+                View All
+                <ChevronRight size={16} />
+              </Link>
+            </div>
+            
+            {pendingBillsList.length > 0 ? (
+              <div className="bills-list">
+                {pendingBillsList.map(bill => (
+                  <div key={bill._id} className="bill-card">
+                    <div className="bill-info">
+                      <h4>{bill.billNumber}</h4>
+                      <p>{bill.patient?.name || 'Unknown'}</p>
+                    </div>
+                    <div className="bill-amount">
+                      <span className="amount">₹{bill.balance}</span>
+                      <span className={`payment-status ${bill.paymentStatus.toLowerCase()}`}>
+                        {bill.paymentStatus}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="empty-state small">
+                <DollarSign size={32} />
+                <p>No pending bills</p>
+              </div>
+            )}
+          </div>
+
+          {/* Recent Enquiries */}
+          <div className="section enquiries-section">
+            <div className="section-header">
+              <div>
+                <h2>Recent Enquiries</h2>
+                <p className="section-subtitle">Latest queries</p>
+              </div>
+              <Link to="/enquiries" className="view-all">
+                View All
+                <ChevronRight size={16} />
+              </Link>
+            </div>
+            
+            {recentEnquiries.length > 0 ? (
+              <div className="enquiries-list">
+                {recentEnquiries.map(enquiry => (
+                  <div key={enquiry._id} className="enquiry-card">
+                    <div className="enquiry-header">
+                      <h4>{enquiry.subject}</h4>
+                      <span className={`priority-badge ${enquiry.priority.toLowerCase()}`}>
+                        {enquiry.priority}
+                      </span>
+                    </div>
+                    <p className="enquiry-from">{enquiry.name} • {enquiry.phone}</p>
                     <span className={`status-badge ${enquiry.status.toLowerCase().replace(' ', '-')}`}>
                       {enquiry.status}
                     </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="empty-state small">
+                <MessageSquare size={32} />
+                <p>No enquiries yet</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Patients */}
+      <div className="section patients-section">
+        <div className="section-header">
+          <div>
+            <h2>Recently Registered Patients</h2>
+            <p className="section-subtitle">Latest additions</p>
+          </div>
+          <Link to="/patient-list" className="view-all">
+            View All
+            <ChevronRight size={16} />
+          </Link>
+        </div>
+        
+        {recentPatients.length > 0 ? (
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Patient ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Phone</th>
+                <th>Blood Group</th>
+                <th>Registered</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentPatients.map(patient => (
+                <tr key={patient._id}>
+                  <td className="patient-id">{patient.patientId}</td>
+                  <td className="patient-name">{patient.name}</td>
+                  <td>{patient.age}</td>
+                  <td>{patient.gender}</td>
+                  <td>{patient.phone}</td>
+                  <td>
+                    <span className="blood-group">{patient.bloodGroup}</span>
                   </td>
-                  <td>{new Date(enquiry.createdAt).toLocaleDateString()}</td>
+                  <td>{new Date(patient.createdAt).toLocaleDateString()}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         ) : (
-          <p className="no-data">No enquiries yet</p>
+          <div className="empty-state">
+            <Users size={48} />
+            <p>No patients registered yet</p>
+            <Link to="/patient-registration" className="btn-link">
+              Register first patient
+            </Link>
+          </div>
         )}
       </div>
     </div>

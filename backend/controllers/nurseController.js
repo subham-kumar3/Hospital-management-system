@@ -2,6 +2,7 @@ const Patient = require('../models/Patient');
 const Vital = require('../models/Vital');
 const MedicationLog = require('../models/MedicationLog');
 const Notification = require('../models/Notification');
+const NurseTask = require('../models/NurseTask');
 
 // @desc    Get nurse dashboard statistics
 // @route   GET /api/nurse/dashboard
@@ -22,6 +23,18 @@ const getNurseDashboard = async (req, res) => {
       status: { $ne: 'Discharged' }
     }).populate('assignedDoctor', 'name specialization');
 
+    // Get patients in ward (admitted)
+    const patientsInWard = await Patient.countDocuments({
+      assignedNurse: nurseId,
+      status: { $in: ['Admitted', 'Stable'] }
+    });
+
+    // Get critical patients
+    const criticalPatients = await Patient.countDocuments({
+      assignedNurse: nurseId,
+      status: 'Critical'
+    });
+
     // Get vitals recorded today
     const vitalsToday = await Vital.countDocuments({
       nurse: nurseId,
@@ -31,6 +44,12 @@ const getNurseDashboard = async (req, res) => {
     // Get pending medications
     const pendingMedications = await MedicationLog.countDocuments({
       status: 'Pending'
+    });
+
+    // Get pending tasks
+    const pendingTasks = await NurseTask.countDocuments({
+      nurse: nurseId,
+      status: { $in: ['Pending', 'In Progress'] }
     });
 
     // Get unread notifications
@@ -50,9 +69,12 @@ const getNurseDashboard = async (req, res) => {
       success: true,
       data: {
         totalPatients: assignedPatients.length,
+        patientsInWard,
+        criticalPatients,
         patients: assignedPatients,
         vitalsRecordedToday: vitalsToday,
         pendingMedications,
+        pendingTasks,
         unreadNotifications,
         emergencyNotifications
       }

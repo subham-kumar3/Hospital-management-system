@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useSidebar } from '../hooks/useSidebar'
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import { 
   LayoutDashboard, 
@@ -19,7 +20,7 @@ import { useAuth } from '../context/AuthContext'
 import './PatientLayout.css'
 
 const PatientLayout = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const { sidebarOpen, toggleSidebar, closeSidebar, isMobile } = useSidebar()
   const location = useLocation()
   const navigate = useNavigate()
   const { user, logout } = useAuth()
@@ -44,6 +45,7 @@ const PatientLayout = () => {
 
   return (
     <div className="patient-layout">
+      {isMobile && sidebarOpen && <div className="sidebar-overlay" onClick={closeSidebar} />}
       <aside className={`patient-sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
         <div className="sidebar-header">
           <h1 className="logo">
@@ -62,6 +64,7 @@ const PatientLayout = () => {
                 key={item.path}
                 to={item.path}
                 className={`nav-item ${isActive ? 'active' : ''}`}
+                onClick={closeSidebar}
               >
                 <Icon size={20} />
                 {sidebarOpen && <span>{item.label}</span>}
@@ -75,7 +78,7 @@ const PatientLayout = () => {
         <header className="top-header">
           <button 
             className="toggle-sidebar"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
+            onClick={toggleSidebar}
           >
             {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
           </button>

@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useSidebar } from '../hooks/useSidebar'
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import { 
   LayoutDashboard, 
@@ -20,7 +21,7 @@ import { useAuth } from '../context/AuthContext'
 import './AdminLayout.css'
 
 const AdminLayout = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const { sidebarOpen, toggleSidebar, closeSidebar, isMobile } = useSidebar()
   const location = useLocation()
   const navigate = useNavigate()
   const { user, logout } = useAuth()
@@ -46,6 +47,7 @@ const AdminLayout = () => {
 
   return (
     <div className="admin-layout">
+      {isMobile && sidebarOpen && <div className="sidebar-overlay" onClick={closeSidebar} />}
       <aside className={`admin-sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
         <div className="sidebar-header">
           <h1 className="logo">
@@ -64,6 +66,7 @@ const AdminLayout = () => {
                 key={item.path}
                 to={item.path}
                 className={`nav-item ${isActive ? 'active' : ''}`}
+                onClick={closeSidebar}
               >
                 <Icon size={20} />
                 {sidebarOpen && <span>{item.label}</span>}
@@ -77,7 +80,7 @@ const AdminLayout = () => {
         <header className="top-header">
           <button 
             className="toggle-sidebar"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
+            onClick={toggleSidebar}
           >
             {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
           </button>

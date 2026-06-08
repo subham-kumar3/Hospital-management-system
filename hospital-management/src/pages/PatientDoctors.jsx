@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Stethoscope, Search, MapPin, Clock, DollarSign } from 'lucide-react'
-import axios from 'axios'
+import api from '../services/api'
 import './PatientDoctors.css'
 
 const PatientDoctors = () => {
@@ -19,8 +19,8 @@ const PatientDoctors = () => {
   const fetchData = async () => {
     try {
       const [doctorsRes, deptsRes] = await Promise.all([
-        axios.get('http://localhost:5001/api/doctors'),
-        axios.get('http://localhost:5001/api/departments')
+        api.get('/doctors'),
+        api.get('/departments')
       ])
 
       if (doctorsRes.data.success) setDoctors(doctorsRes.data.data)

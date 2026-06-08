@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { Bell } from 'lucide-react'
+import { Bell, Check, Trash2, Filter, Search } from 'lucide-react'
 import { notificationService } from '../services'
+import './Notifications.css'
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(true)
+  const [filter, setFilter] = useState('all')
+  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     fetchNotifications()
@@ -12,10 +15,12 @@ const Notifications = () => {
 
   const fetchNotifications = async () => {
     try {
-      const response = await notificationService.getUserNotifications()
-      if (response.success) setNotifications(response.data)
+      const response = await notificationService.getAllNotifications()
+      if (response.success) {
+        setNotifications(response.data)
+      }
     } catch (error) {
-      console.error('Error:', error)
+      console.error('Error fetching notifications:', error)
     } finally {
       setLoading(false)
     }
@@ -26,7 +31,7 @@ const Notifications = () => {
       await notificationService.markAsRead(id)
       fetchNotifications()
     } catch (error) {
-      console.error('Error:', error)
+      console.error('Error marking as read:', error)
     }
   }
 
@@ -35,67 +40,175 @@ const Notifications = () => {
       await notificationService.markAllAsRead()
       fetchNotifications()
     } catch (error) {
-      console.error('Error:', error)
+      console.error('Error marking all as read:', error)
     }
   }
 
-  const getTypeIcon = (type) => {
-    switch(type) {
-      case 'warning': return '⚠️'
-      case 'alert': return '🚨'
-      default: return 'ℹ️'
+  const deleteNotification = async (id) => {
+    try {
+      await notificationService.deleteNotification(id)
+      fetchNotifications()
+    } catch (error) {
+      console.error('Error deleting notification:', error)
     }
+  }
+
+  const filteredNotifications = notifications.filter(notification => {
+    const matchesFilter = filter === 'all' || 
+      (filter === 'unread' && !notification.read) ||
+      (filter === 'read' && notification.read)
+    
+    const matchesSearch = notification.message?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      notification.title?.toLowerCase().includes(searchTerm.toLowerCase())
+    
+    return matchesFilter && matchesSearch
+  })
+
+  const unreadCount = notifications.filter(n => !n.read).length
+
+  const getNotificationIcon = (type) => {
+    switch (type) {
+      case 'appointment':
+        return '📅'
+      case 'patient':
+        return '👤'
+      case 'billing':
+        return '💰'
+      case 'enquiry':
+        return '📝'
+      default:
+        return '🔔'
+    }
+  }
+
+  const getTimeAgo = (date) => {
+    const now = new Date()
+    const notificationDate = new Date(date)
+    const seconds = Math.floor((now - notificationDate) / 1000)
+    
+    if (seconds < 60) return 'Just now'
+    if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`
+    return `${Math.floor(seconds / 86400)} days ago`
+  }
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading notifications...</p>
+      </div>
+    )
   }
 
   return (
-    <div style={{ padding: '20px', background: '#f5f6fa', minHeight: '100vh' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-        <h1 style={{ fontSize: '2rem', color: '#2c3e50', display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Bell size={32} /> Notifications
-        </h1>
-        <button onClick={markAllAsRead} style={{ padding: '12px 24px', background: '#667eea', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600' }}>
-          Mark All as Read
-        </button>
-      </div>
-
-      {loading ? <p>Loading...</p> : (
-        <div style={{ display: 'grid', gap: '15px' }}>
-          {notifications.length > 0 ? notifications.map(notification => (
-            <div
-              key={notification._id}
-              onClick={() => !notification.isRead && markAsRead(notification._id)}
-              style={{
-                padding: '20px',
-                background: notification.isRead ? 'white' : '#f0f7ff',
-                border: notification.isRead ? '1px solid #dee2e6' : '2px solid #667eea',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'start', gap: '15px' }}>
-                <span style={{ fontSize: '2rem' }}>{getTypeIcon(notification.type)}</span>
-                <div style={{ flex: 1 }}>
-                  <h3 style={{ margin: '0 0 10px', color: '#2c3e50' }}>{notification.title}</h3>
-                  <p style={{ margin: '0 0 10px', color: '#495057' }}>{notification.message}</p>
-                  <p style={{ margin: 0, fontSize: '0.85rem', color: '#7f8c8d' }}>
-                    {new Date(notification.createdAt).toLocaleString()}
-                  </p>
-                </div>
-                {!notification.isRead && (
-                  <span style={{ padding: '4px 12px', background: '#667eea', color: 'white', borderRadius: '12px', fontSize: '0.75rem', fontWeight: '600' }}>
-                    NEW
-                  </span>
-                )}
-              </div>
-            </div>
-          )) : (
-            <p style={{ textAlign: 'center', padding: '60px', color: '#7f8c8d', fontSize: '1.1rem' }}>
-              No notifications
-            </p>
+    <div className="notifications-page">
+      <div className="notifications-header">
+        <div>
+          <h1>
+            <Bell size={28} />
+            Notifications
+          </h1>
+          <p className="subtitle">
+            {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
+          </p>
+        </div>
+        <div className="header-actions">
+          {unreadCount > 0 && (
+            <button onClick={markAllAsRead} className="btn-mark-all">
+              <Check size={18} />
+              Mark All Read
+            </button>
           )}
         </div>
-      )}
+      </div>
+
+      <div className="notifications-controls">
+        <div className="search-box">
+          <Search size={18} />
+          <input
+            type="text"
+            placeholder="Search notifications..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        
+        <div className="filter-tabs">
+          <button
+            className={`filter-tab ${filter === 'all' ? 'active' : ''}`}
+            onClick={() => setFilter('all')}
+          >
+            All ({notifications.length})
+          </button>
+          <button
+            className={`filter-tab ${filter === 'unread' ? 'active' : ''}`}
+            onClick={() => setFilter('unread')}
+          >
+            Unread ({unreadCount})
+          </button>
+          <button
+            className={`filter-tab ${filter === 'read' ? 'active' : ''}`}
+            onClick={() => setFilter('read')}
+          >
+            Read ({notifications.length - unreadCount})
+          </button>
+        </div>
+      </div>
+
+      <div className="notifications-list">
+        {filteredNotifications.length > 0 ? (
+          filteredNotifications.map(notification => (
+            <div
+              key={notification._id}
+              className={`notification-card ${!notification.read ? 'unread' : ''}`}
+            >
+              <div className="notification-icon">
+                {getNotificationIcon(notification.type)}
+              </div>
+              
+              <div className="notification-content">
+                <div className="notification-header">
+                  <h3>{notification.title || 'Notification'}</h3>
+                  <span className="notification-time">
+                    {getTimeAgo(notification.createdAt)}
+                  </span>
+                </div>
+                <p className="notification-message">{notification.message}</p>
+              </div>
+
+              <div className="notification-actions">
+                {!notification.read && (
+                  <button
+                    onClick={() => markAsRead(notification._id)}
+                    className="btn-action btn-read"
+                    title="Mark as read"
+                  >
+                    <Check size={18} />
+                  </button>
+                )}
+                <button
+                  onClick={() => deleteNotification(notification._id)}
+                  className="btn-action btn-delete"
+                  title="Delete"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="empty-state">
+            <Bell size={64} />
+            <h3>No notifications</h3>
+            <p>
+              {searchTerm || filter !== 'all'
+                ? 'No notifications match your filters'
+                : 'You\'re all caught up!'}
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

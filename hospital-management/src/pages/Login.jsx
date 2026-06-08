@@ -96,6 +96,11 @@ const Login = () => {
             </div>
             <h1>Hospital Management System</h1>
             <p>Please sign in to continue</p>
+            {import.meta.env.DEV && (
+              <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '8px', lineHeight: 1.5 }}>
+                Dev mode: API proxied to <code>localhost:5001</code>. LAN testing: set <code>VITE_API_URL</code> in <code>.env.development</code>
+              </p>
+            )}
           </div>
 
           {error && (
@@ -288,6 +293,62 @@ const Login = () => {
               </button>
             </div>
             
+            {/* Pharmacy Login */}
+            <div className="login-section">
+              <p><strong>💊 Pharmacist Login:</strong></p>
+              <div className="credentials-box">
+                <p><strong>Email:</strong> pharmacist@hospital.com</p>
+                <p><strong>Password:</strong> pharmacy123</p>
+              </div>
+              <button 
+                onClick={() => { setEmail('pharmacist@hospital.com'); setPassword('pharmacy123'); }}
+                className="quick-login-btn"
+                style={{
+                  display: 'block',
+                  inlineSize: '100%',
+                  background: 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)',
+                  color: 'white',
+                  border: 'none',
+                  padding: '10px',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontSize: '0.9rem',
+                  fontWeight: '600',
+                  marginBlockEnd: '8px'
+                }}
+              >
+                Login as Pharmacist
+              </button>
+            </div>
+
+            {/* Lab Login */}
+            <div className="login-section">
+              <p><strong>🔬 Lab Technician Login:</strong></p>
+              <div className="credentials-box">
+                <p><strong>Email:</strong> lab@hospital.com</p>
+                <p><strong>Password:</strong> lab123</p>
+              </div>
+              <button 
+                onClick={() => { setEmail('lab@hospital.com'); setPassword('lab123'); }}
+                className="quick-login-btn"
+                style={{
+                  display: 'block',
+                  inlineSize: '100%',
+                  background: 'linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%)',
+                  color: 'white',
+                  border: 'none',
+                  padding: '10px',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontSize: '0.9rem',
+                  fontWeight: '600',
+                  marginBlockEnd: '8px'
+                }}
+              >
+                Login as Lab Technician
+              </button>
+            </div>
+
             {/* Receptionist Login */}
             <div className="login-section">
               <p><strong>👨‍💼 Receptionist Login:</strong></p>

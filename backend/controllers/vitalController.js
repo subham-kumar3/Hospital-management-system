@@ -1,5 +1,6 @@
 const Vital = require('../models/Vital');
 const Patient = require('../models/Patient');
+const Notification = require('../models/Notification');
 
 // @desc    Add new vitals
 // @route   POST /api/vitals
@@ -28,9 +29,50 @@ const addVitals = async (req, res) => {
       notes
     });
 
+    // Check for critical values and create alerts
+    const criticalAlerts = [];
+    
+    // Check temperature (normal: 97-99 F)
+    if (temperature > 103 || temperature < 95) {
+      criticalAlerts.push(`Critical Temperature: ${temperature}°F`);
+    }
+    
+    // Check blood pressure (normal: 90-120 / 60-80)
+    if (bloodPressure.systolic > 180 || bloodPressure.systolic < 80 || 
+        bloodPressure.diastolic > 120 || bloodPressure.diastolic < 50) {
+      criticalAlerts.push(`Critical BP: ${bloodPressure.systolic}/${bloodPressure.diastolic}`);
+    }
+    
+    // Check pulse (normal: 60-100 bpm)
+    if (pulse > 120 || pulse < 50) {
+      criticalAlerts.push(`Critical Pulse: ${pulse} bpm`);
+    }
+    
+    // Check oxygen level (normal: 95-100%)
+    if (oxygenLevel < 90) {
+      criticalAlerts.push(`Critical O2 Level: ${oxygenLevel}%`);
+    }
+
+    // Create notifications for critical values
+    if (criticalAlerts.length > 0) {
+      await Notification.create({
+        recipient: req.user.id,
+        type: 'Emergency',
+        title: 'Critical Vitals Alert',
+        message: `Patient ${patient.name}: ${criticalAlerts.join(', ')}`,
+        patient: patientId
+      });
+
+      // Update patient status to Critical if not already
+      if (patient.status !== 'Critical') {
+        await Patient.findByIdAndUpdate(patientId, { status: 'Critical' });
+      }
+    }
+
     res.status(201).json({
       success: true,
-      data: vital
+      data: vital,
+      criticalAlerts: criticalAlerts
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

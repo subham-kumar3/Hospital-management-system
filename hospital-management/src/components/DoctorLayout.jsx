@@ -1,10 +1,14 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useSidebar } from '../hooks/useSidebar'
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import { 
   LayoutDashboard, 
   Calendar, 
   Users, 
-  FileText, 
+  FileText,
+  ClipboardList,
+  TestTube,
+  Bell,
   User,
   Menu,
   X,
@@ -13,7 +17,7 @@ import {
 import './Layout.css'
 
 const DoctorLayout = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const { sidebarOpen, toggleSidebar, closeSidebar, isMobile } = useSidebar()
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -30,12 +34,16 @@ const DoctorLayout = () => {
     { path: '/doctor-dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/doctor-appointments', icon: Calendar, label: 'Appointments' },
     { path: '/doctor-patients', icon: Users, label: 'My Patients' },
-    { path: '/doctor-reports', icon: FileText, label: 'Reports' },
+    { path: '/doctor-prescriptions', icon: ClipboardList, label: 'Prescriptions' },
+    { path: '/doctor-medical-records', icon: FileText, label: 'Medical Records' },
+    { path: '/doctor-lab-reports', icon: TestTube, label: 'Lab Reports' },
+    { path: '/doctor-notifications', icon: Bell, label: 'Notifications' },
     { path: '/doctor-profile', icon: User, label: 'Profile' },
   ]
 
   return (
     <div className="layout">
+      {isMobile && sidebarOpen && <div className="sidebar-overlay" onClick={closeSidebar} />}
       <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
         <div className="sidebar-header">
           <h1 className="logo">
@@ -54,6 +62,7 @@ const DoctorLayout = () => {
                 key={item.path}
                 to={item.path}
                 className={`nav-item ${isActive ? 'active' : ''}`}
+                onClick={closeSidebar}
               >
                 <Icon size={20} />
                 {sidebarOpen && <span>{item.label}</span>}
@@ -67,7 +76,7 @@ const DoctorLayout = () => {
         <header className="top-header">
           <button 
             className="toggle-sidebar"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
+            onClick={toggleSidebar}
           >
             {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
           </button>

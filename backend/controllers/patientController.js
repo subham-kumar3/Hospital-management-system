@@ -1,4 +1,5 @@
 const Patient = require('../models/Patient');
+const { emitPatientUpdate, emitDashboardUpdate } = require('../services/socketService');
 
 // @desc    Get all patients
 // @route   GET /api/patients
@@ -35,6 +36,11 @@ const getPatient = async (req, res) => {
 const createPatient = async (req, res) => {
   try {
     const patient = await Patient.create(req.body);
+    
+    // Emit real-time event
+    emitPatientUpdate('created', patient);
+    emitDashboardUpdate({ type: 'patient_created' });
+    
     res.status(201).json({ success: true, data: patient });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Calendar, ClipboardList, DollarSign, Activity, Clock, User } from 'lucide-react'
 import { patientApi } from '../services/patientApi'
+import { onAppointmentUpdate } from '../services/socketService'
 import './PatientDashboard.css'
 
 const PatientDashboard = () => {
@@ -11,6 +12,16 @@ const PatientDashboard = () => {
 
   useEffect(() => {
     fetchDashboardData()
+    
+    // Setup real-time listeners
+    const cleanup = onAppointmentUpdate((data) => {
+      console.log('🔄 Patient: Real-time appointment update:', data.action)
+      fetchDashboardData()
+    })
+    
+    return () => {
+      if (cleanup) cleanup()
+    }
   }, [])
 
   const fetchDashboardData = async () => {
@@ -18,9 +29,34 @@ const PatientDashboard = () => {
       const response = await patientApi.getDashboard()
       if (response.data.success) {
         setDashboardData(response.data.data)
+      } else {
+        const userData = JSON.parse(localStorage.getItem('user') || '{}')
+        setDashboardData({
+          patient: { name: userData.name, email: userData.email },
+          stats: {
+            upcomingAppointments: 0,
+            activePrescriptions: 0,
+            pendingBills: 0,
+            totalVisits: 0
+          },
+          upcomingAppointments: [],
+          recentPrescriptions: []
+        })
       }
     } catch (error) {
       console.error('Error fetching dashboard data:', error)
+      const userData = JSON.parse(localStorage.getItem('user') || '{}')
+      setDashboardData({
+        patient: { name: userData.name, email: userData.email },
+        stats: {
+          upcomingAppointments: 0,
+          activePrescriptions: 0,
+          pendingBills: 0,
+          totalVisits: 0
+        },
+        upcomingAppointments: [],
+        recentPrescriptions: []
+      })
     } finally {
       setLoading(false)
     }
@@ -31,7 +67,7 @@ const PatientDashboard = () => {
   }
 
   if (!dashboardData) {
-    return <div className="error">Failed to load dashboard</div>
+    return <div className="error">Failed to load dashboard. Please try refreshing.</div>
   }
 
   const { stats, upcomingAppointments, recentPrescriptions, patient } = dashboardData

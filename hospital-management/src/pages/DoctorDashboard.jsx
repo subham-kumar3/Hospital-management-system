@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { User, Mail, Phone, Calendar, Clock, FileText, Users, Activity } from 'lucide-react'
-import { appointmentService, patientService, doctorService } from '../services'
+import { appointmentService, patientService, doctorService, doctorPortalService } from '../services'
+import { onAppointmentUpdate, onPatientUpdate } from '../services/socketService'
 import './DoctorDashboard.css'
 
 const DoctorDashboard = () => {
@@ -16,77 +17,82 @@ const DoctorDashboard = () => {
   useEffect(() => {
     fetchDoctorData()
     
-    // Refresh data every 30 seconds to keep it in sync with admin
-    const interval = setInterval(fetchDoctorData, 30000)
+    // Setup real-time listeners
+    const cleanupAppointment = onAppointmentUpdate((data) => {
+      console.log('🔄 Doctor: Real-time appointment update:', data.action)
+      fetchDoctorData()
+    })
     
-    return () => clearInterval(interval)
+    const cleanupPatient = onPatientUpdate((data) => {
+      console.log('🔄 Doctor: Real-time patient update:', data.action)
+      fetchDoctorData()
+    })
+    
+    return () => {
+      if (cleanupAppointment) cleanupAppointment()
+      if (cleanupPatient) cleanupPatient()
+    }
   }, [])
 
   const fetchDoctorData = async () => {
     try {
-      const token = localStorage.getItem('token')
       const userData = JSON.parse(localStorage.getItem('user') || '{}')
-      
-      // Get doctor ID from user data
-      const doctorId = userData._id || userData.id
-      
-      if (!doctorId) {
-        console.error('No doctor ID found in user data')
-        return
-      }
 
-      // Fetch all appointments (same as admin)
-      const allAppointmentsResponse = await appointmentService.getAllAppointments()
-      
-      if (allAppointmentsResponse.success) {
-        // Filter appointments for this specific doctor
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
-        const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000)
-        
-        const doctorAppointments = allAppointmentsResponse.data.filter(apt => {
-          const aptDoctorId = apt.doctor?._id || apt.doctor
-          return aptDoctorId === doctorId
+      const [portalRes, allAppointmentsResponse, allPatientsResponse, allDoctorsResponse] = await Promise.all([
+        doctorPortalService.getDashboard().catch(() => ({ success: false, data: {} })),
+        appointmentService.getAllAppointments().catch(() => ({ success: false, data: [] })),
+        patientService.getAllPatients().catch(() => ({ success: false, data: [] })),
+        doctorService.getAllDoctors().catch(() => ({ success: false, data: [] }))
+      ])
+
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000)
+
+      if (portalRes.success) {
+        setTodayAppointments(portalRes.data.appointments || [])
+        setStats({
+          totalPatients: portalRes.data.totalPatients || 0,
+          todayAppointments: portalRes.data.todayAppointments || 0,
+          pendingReports: portalRes.data.pendingLabTests || 0
         })
-        
-        // Filter today's appointments
-        const todaysApts = doctorAppointments.filter(apt => {
+      } else if (allAppointmentsResponse.success) {
+        const todaysApts = allAppointmentsResponse.data.filter(apt => {
           if (!apt.date) return false
           const aptDate = new Date(apt.date)
           return aptDate >= today && aptDate < tomorrow
         })
-        
+
         setTodayAppointments(todaysApts)
-        
-        // Get all patients and filter for this doctor's patients
-        const allPatientsResponse = await patientService.getAllPatients()
-        
-        if (allPatientsResponse.success) {
-          // Count unique patients who had appointments with this doctor
-          const doctorPatientIds = new Set()
-          doctorAppointments.forEach(apt => {
-            if (apt.patient?._id || apt.patient) {
-              doctorPatientIds.add(apt.patient?._id || apt.patient)
-            }
-          })
-          
-          setStats({
-            totalPatients: doctorPatientIds.size,
-            todayAppointments: todaysApts.length,
-            pendingReports: 0
-          })
-        }
+        setStats({
+          totalPatients: allPatientsResponse.success ? allPatientsResponse.data.length : 0,
+          todayAppointments: todaysApts.length,
+          pendingReports: allAppointmentsResponse.data.filter(apt =>
+            apt.status === 'Pending' || apt.status === 'Confirmed'
+          ).length
+        })
       }
-      
-      // Fetch doctor profile
-      const doctorResponse = await doctorService.getDoctor(doctorId)
-      if (doctorResponse.success) {
-        setDoctor(doctorResponse.data)
+
+      // Match doctor profile by email from doctors list
+      let doctorProfile = null
+      if (allDoctorsResponse.success) {
+        doctorProfile = allDoctorsResponse.data.find(
+          d => d.email?.toLowerCase() === userData.email?.toLowerCase()
+        )
       }
+
+      setDoctor(doctorProfile || {
+        name: userData.name,
+        specialization: userData.specialization || 'General Medicine',
+        qualification: 'MD',
+        experience: 5,
+        email: userData.email,
+        phone: userData.phone || '',
+        department: userData.department || 'General Medicine',
+        consultationFee: 500
+      })
     } catch (error) {
       console.error('Error fetching doctor data:', error)
-      
-      // Fallback to local storage data if API fails
       const userData = JSON.parse(localStorage.getItem('user') || '{}')
       setDoctor({
         name: userData.name,
@@ -94,10 +100,9 @@ const DoctorDashboard = () => {
         qualification: 'MD',
         experience: 5,
         email: userData.email,
-        phone: '+91 9876543210',
+        phone: '',
         department: 'General Medicine',
-        consultationFee: 500,
-        _id: 'local-id'
+        consultationFee: 500
       })
     } finally {
       setLoading(false)

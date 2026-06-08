@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
+import { onDashboardUpdate } from '../services/socketService';
 import './LabDashboard.css';
 
 const LabDashboard = () => {
@@ -9,6 +10,16 @@ const LabDashboard = () => {
 
   useEffect(() => {
     fetchDashboardData();
+    
+    // Setup real-time listeners
+    const cleanup = onDashboardUpdate((data) => {
+      console.log('🔄 Lab: Real-time update:', data.data.type);
+      fetchDashboardData();
+    });
+    
+    return () => {
+      if (cleanup) cleanup();
+    };
   }, []);
 
   const fetchDashboardData = async () => {
@@ -28,7 +39,18 @@ const LabDashboard = () => {
     return <div className="loading">Loading dashboard...</div>;
   }
 
-  const { statistics, urgentTests, recentTests } = dashboardData || {};
+  const { statistics, urgentTests, recentTests } = dashboardData || {
+    statistics: {
+      pendingTests: 0,
+      inProgressTests: 0,
+      completedTests: 0,
+      urgentTests: 0,
+      pendingSamples: 0,
+      collectedSamples: 0
+    },
+    urgentTests: [],
+    recentTests: []
+  };
 
   return (
     <div className="lab-dashboard">

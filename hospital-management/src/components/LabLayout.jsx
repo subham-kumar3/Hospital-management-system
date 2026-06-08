@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useSidebar } from '../hooks/useSidebar';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './LabLayout.css';
 
-const LabLayout = ({ children }) => {
+const LabLayout = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { sidebarOpen, toggleSidebar, closeSidebar, isMobile } = useSidebar();
 
   const navItems = [
     { path: '/lab-dashboard', label: 'Dashboard', icon: '📊' },
@@ -26,12 +27,13 @@ const LabLayout = ({ children }) => {
 
   return (
     <div className="lab-layout">
+      {isMobile && sidebarOpen && <div className="sidebar-overlay" onClick={closeSidebar} />}
       <aside className={`lab-sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
         <div className="lab-sidebar-header">
           <h2>🔬 Lab Portal</h2>
           <button 
             className="sidebar-toggle"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
+            onClick={toggleSidebar}
           >
             {sidebarOpen ? '◀' : '▶'}
           </button>
@@ -43,6 +45,7 @@ const LabLayout = ({ children }) => {
               key={item.path}
               to={item.path}
               className={`lab-nav-item ${location.pathname === item.path ? 'active' : ''}`}
+              onClick={closeSidebar}
             >
               <span className="nav-icon">{item.icon}</span>
               {sidebarOpen && <span className="nav-label">{item.label}</span>}
@@ -66,7 +69,18 @@ const LabLayout = ({ children }) => {
       </aside>
 
       <main className="lab-main-content">
-        {children}
+        {isMobile && (
+          <div className="lab-mobile-header">
+            <button className="lab-mobile-menu-btn" onClick={toggleSidebar} aria-label="Open menu">
+              ☰
+            </button>
+            <h3>🔬 Lab Portal</h3>
+            <button className="logout-btn" onClick={handleLogout} style={{ width: 'auto', padding: '8px 12px' }}>
+              🚪
+            </button>
+          </div>
+        )}
+        <Outlet />
       </main>
     </div>
   );

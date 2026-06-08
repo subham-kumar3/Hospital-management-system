@@ -42,7 +42,11 @@ const {
 router.use(protect);
 router.use(authorize('Pharmacist'));
 
-// Medicine routes
+// Medicine routes - specific paths before :id
+router.get('/medicines/stats', getMedicineStats);
+router.get('/medicines/alerts/low-stock', getLowStockAlerts);
+router.get('/medicines/alerts/expired', getExpiredMedicines);
+
 router.route('/medicines')
   .get(getMedicines)
   .post(addMedicine);
@@ -53,9 +57,6 @@ router.route('/medicines/:id')
   .delete(deleteMedicine);
 
 router.patch('/medicines/:id/stock', updateStock);
-router.get('/medicines/alerts/low-stock', getLowStockAlerts);
-router.get('/medicines/alerts/expired', getExpiredMedicines);
-router.get('/medicines/stats', getMedicineStats);
 
 // Prescription routes
 router.get('/prescriptions/today', getTodayPrescriptions);

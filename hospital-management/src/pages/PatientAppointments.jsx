@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Calendar, Clock, User, Plus, X, Check } from 'lucide-react'
 import { patientApi } from '../services/patientApi'
-import axios from 'axios'
+import api from '../services/api'
 import './PatientAppointments.css'
 
 const PatientAppointments = () => {
@@ -29,8 +29,8 @@ const PatientAppointments = () => {
     try {
       const [appointmentsRes, doctorsRes, deptsRes] = await Promise.all([
         patientApi.getAppointments(),
-        axios.get('http://localhost:5001/api/doctors'),
-        axios.get('http://localhost:5001/api/departments')
+        api.get('/doctors'),
+        api.get('/departments')
       ])
 
       if (appointmentsRes.data.success) {

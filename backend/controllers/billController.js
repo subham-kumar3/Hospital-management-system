@@ -1,4 +1,5 @@
 const Bill = require('../models/Bill');
+const { emitDashboardUpdate } = require('../services/socketService');
 
 // @desc    Get all bills
 // @route   GET /api/bills
@@ -98,6 +99,9 @@ exports.createBill = async (req, res) => {
       .populate('patient', 'name email phone')
       .populate('createdBy', 'name');
 
+    // Emit real-time event
+    emitDashboardUpdate({ type: 'bill_created', bill: populatedBill });
+
     res.status(201).json({
       success: true,
       data: populatedBill
@@ -134,6 +138,9 @@ exports.updateBill = async (req, res) => {
     )
       .populate('patient', 'name email phone')
       .populate('createdBy', 'name');
+
+    // Emit real-time event
+    emitDashboardUpdate({ type: 'bill_updated', bill });
 
     res.json({
       success: true,

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Calendar, Clock, User, Phone, Mail, Stethoscope, Check, LogOut } from 'lucide-react'
-import axios from 'axios'
+import api from '../services/api'
 import './PatientAppointment.css'
 
 const PatientAppointment = () => {
@@ -43,9 +43,9 @@ const PatientAppointment = () => {
       const config = { headers: { Authorization: `Bearer ${token}` } }
 
       const [doctorsRes, deptsRes, apptsRes] = await Promise.all([
-        axios.get('http://localhost:5001/api/doctors', config).catch(() => ({ data: { success: false, data: [] } })),
-        axios.get('http://localhost:5001/api/departments', config).catch(() => ({ data: { success: false, data: [] } })),
-        axios.get('http://localhost:5001/api/appointments', config).catch(() => ({ data: { success: false, data: [] } }))
+        api.get('/doctors', config).catch(() => ({ data: { success: false, data: [] } })),
+        api.get('/departments', config).catch(() => ({ data: { success: false, data: [] } })),
+        api.get('/appointments', config).catch(() => ({ data: { success: false, data: [] } }))
       ])
 
       setDoctors(doctorsRes.data.success ? doctorsRes.data.data : [])
@@ -90,7 +90,7 @@ const PatientAppointment = () => {
         status: 'Pending'
       }
 
-      await axios.post('http://localhost:5001/api/appointments', appointmentData, config)
+      await api.post('/appointments', appointmentData, config)
       
       alert('Appointment booked successfully!')
       setShowBookingForm(false)

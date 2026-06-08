@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Calendar, Clock, User, Phone, Mail, Search, Filter, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
 import { appointmentService } from '../services'
+import { onAppointmentUpdate } from '../services/socketService'
 import './DoctorAppointments.css'
 
 const DoctorAppointments = () => {
@@ -15,9 +16,15 @@ const DoctorAppointments = () => {
     setDoctor(userData)
     fetchAppointments()
     
-    // Refresh every 30 seconds to stay in sync with admin
-    const interval = setInterval(fetchAppointments, 30000)
-    return () => clearInterval(interval)
+    // Setup real-time listener for appointments
+    const cleanup = onAppointmentUpdate((data) => {
+      console.log('🔄 Doctor Appointments: Real-time update:', data.action)
+      fetchAppointments()
+    })
+    
+    return () => {
+      if (cleanup) cleanup()
+    }
   }, [])
 
   const fetchAppointments = async () => {

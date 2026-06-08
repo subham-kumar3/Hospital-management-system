@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Calendar, Plus } from 'lucide-react'
 import { appointmentService, doctorService, patientService } from '../services'
+import { onAppointmentUpdate } from '../services/socketService'
 
 const ReceptionistAppointments = () => {
   const [appointments, setAppointments] = useState([])
@@ -20,6 +21,17 @@ const ReceptionistAppointments = () => {
 
   useEffect(() => {
     fetchData()
+    
+    // Setup real-time listener for appointments
+    const cleanup = onAppointmentUpdate((data) => {
+      console.log('🔄 Real-time appointment update:', data.action)
+      fetchData() // Refresh appointments
+    })
+    
+    // Cleanup listener on unmount
+    return () => {
+      if (cleanup) cleanup()
+    }
   }, [])
 
   const fetchData = async () => {
@@ -115,14 +127,66 @@ const ReceptionistAppointments = () => {
         {loading ? <p>Loading...</p> : (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ background: '#f8f9fa' }}>
-                <th style={{ padding: '12px', textAlign: 'left' }}>Date</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>Time</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>Patient</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>Doctor</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>Type</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>Status</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>Actions</th>
+              <tr style={{ 
+                background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                color: 'white'
+              }}>
+                <th style={{ 
+                  padding: '14px 12px', 
+                  textAlign: 'left',
+                  fontWeight: '600',
+                  fontSize: '0.9rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}>Date</th>
+                <th style={{ 
+                  padding: '14px 12px', 
+                  textAlign: 'left',
+                  fontWeight: '600',
+                  fontSize: '0.9rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}>Time</th>
+                <th style={{ 
+                  padding: '14px 12px', 
+                  textAlign: 'left',
+                  fontWeight: '600',
+                  fontSize: '0.9rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}>Patient</th>
+                <th style={{ 
+                  padding: '14px 12px', 
+                  textAlign: 'left',
+                  fontWeight: '600',
+                  fontSize: '0.9rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}>Doctor</th>
+                <th style={{ 
+                  padding: '14px 12px', 
+                  textAlign: 'left',
+                  fontWeight: '600',
+                  fontSize: '0.9rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}>Type</th>
+                <th style={{ 
+                  padding: '14px 12px', 
+                  textAlign: 'left',
+                  fontWeight: '600',
+                  fontSize: '0.9rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}>Status</th>
+                <th style={{ 
+                  padding: '14px 12px', 
+                  textAlign: 'left',
+                  fontWeight: '600',
+                  fontSize: '0.9rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}>Actions</th>
               </tr>
             </thead>
             <tbody>

@@ -60,7 +60,12 @@ const NurseVitals = () => {
       
       const response = await addVitals(data)
       if (response.success) {
-        alert('Vitals recorded successfully!')
+        // Check for critical alerts
+        if (response.criticalAlerts && response.criticalAlerts.length > 0) {
+          alert('⚠️ CRITICAL VITALS ALERT!\n\n' + response.criticalAlerts.join('\n') + '\n\nEmergency notification has been sent!')
+        } else {
+          alert('Vitals recorded successfully!')
+        }
         setFormData({ temperature: '', systolic: '', diastolic: '', pulse: '', oxygenLevel: '', respiratoryRate: '', notes: '' })
         setShowForm(false)
         fetchVitalsHistory(selectedPatient)

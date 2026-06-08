@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Phone, Lock, User, Mail, Calendar, Activity } from 'lucide-react'
-import axios from 'axios'
+import api from '../services/api'
 import './PatientLogin.css'
 
 const PatientLogin = () => {
@@ -28,7 +28,7 @@ const PatientLogin = () => {
     try {
       if (isLogin) {
         // Login existing patient
-        const response = await axios.post('http://localhost:5001/api/auth/login', {
+        const response = await api.post('/auth/login', {
           email: formData.email || formData.phone,
           password: formData.password
         })
@@ -40,7 +40,7 @@ const PatientLogin = () => {
         }
       } else {
         // Register new patient
-        const response = await axios.post('http://localhost:5001/api/auth/register', {
+        const response = await api.post('/auth/register', {
           name: formData.name,
           phone: formData.phone,
           email: formData.email,

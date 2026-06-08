@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Users, UserCheck, Calendar, DollarSign, TrendingUp, Clock, Pill, FlaskConical, Activity, AlertCircle } from 'lucide-react'
 import { adminApi } from '../services/adminApi'
 import { appointmentService, patientService, doctorService } from '../services'
+import { onAppointmentUpdate, onPatientUpdate, onDashboardUpdate } from '../services/socketService'
 import './AdminDashboard.css'
 
 const AdminDashboard = () => {
@@ -16,6 +17,28 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     fetchDashboard()
+    
+    // Setup real-time listeners for all data
+    const cleanupAppointment = onAppointmentUpdate((data) => {
+      console.log('🔄 Admin: Real-time appointment update:', data.action)
+      fetchDashboard()
+    })
+    
+    const cleanupPatient = onPatientUpdate((data) => {
+      console.log('🔄 Admin: Real-time patient update:', data.action)
+      fetchDashboard()
+    })
+    
+    const cleanupDashboard = onDashboardUpdate((data) => {
+      console.log('🔄 Admin: Real-time dashboard update:', data.data.type)
+      fetchDashboard()
+    })
+    
+    return () => {
+      if (cleanupAppointment) cleanupAppointment()
+      if (cleanupPatient) cleanupPatient()
+      if (cleanupDashboard) cleanupDashboard()
+    }
   }, [])
 
   const fetchDashboard = async () => {
@@ -61,9 +84,10 @@ const AdminDashboard = () => {
         console.log('📅 Appointments:', appointmentsRes.data.length)
       }
 
-      if (usersRes.success) {
-        setAllUsers(usersRes.data)
-        console.log('👤 Users:', usersRes.data.length)
+      const usersData = usersRes.data?.data || usersRes.data || []
+      if (usersRes.data?.success || usersRes.success) {
+        setAllUsers(Array.isArray(usersData) ? usersData : [])
+        console.log('👤 Users:', Array.isArray(usersData) ? usersData.length : 0)
       }
 
     } catch (error) {
