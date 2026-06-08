@@ -11,7 +11,7 @@
 # =============================================================================
 # REQUIRED — set in Netlify Dashboard (Site settings → Environment variables):
 #
-#   VITE_API_URL = https://your-backend.onrender.com
+#   VITE_API_URL = https://hospital-management-system-111.onrender.com
 #
 # Without this, the build will FAIL with a clear error (not just a warning).
 # Vite bakes VITE_API_URL into the JS bundle at build time.
