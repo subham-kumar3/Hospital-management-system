@@ -1,7 +1,21 @@
 // Simplified, production-safe CORS configuration
 // Exports: corsOptions, getAllowedOrigins, getSocketCorsOrigins
 
-const processEnvFrontend = (process.env.FRONTEND_URL || '').trim();
+// Normalize FRONTEND_URL: accept values with paths (e.g. https://site.com/login)
+// and reduce them to origin (scheme + host + optional port).
+let processEnvFrontend = '';
+if (process.env.FRONTEND_URL) {
+  const raw = process.env.FRONTEND_URL.trim();
+  try {
+    // new URL() will throw if string is not absolute
+    const u = new URL(raw);
+    processEnvFrontend = u.origin;
+  } catch (e) {
+    // Fallback: strip path after first single slash following host
+    // Remove trailing slash if present
+    processEnvFrontend = raw.replace(/\/$/, '').replace(/^(https?:\/\/[^\/]+).*/, '$1');
+  }
+}
 
 // Allowed origins (explicit list). Add more origins if needed.
 const allowedOrigins = [
