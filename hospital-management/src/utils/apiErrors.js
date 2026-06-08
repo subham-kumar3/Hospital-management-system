@@ -16,6 +16,9 @@ export const getApiErrorMessage = (error, fallback = 'Something went wrong. Plea
     if (error.code === 'ECONNABORTED') {
       return 'Request timed out. Please try again.';
     }
+    if (import.meta.env.PROD) {
+      return 'Unable to reach the server. Backend may be starting (wait 60s) or CORS is misconfigured — set FRONTEND_URL on Render to your Netlify URL.';
+    }
     return 'Unable to reach the server. Check your internet connection and ensure the backend is running.';
   }
 
@@ -34,6 +37,9 @@ export const getApiErrorMessage = (error, fallback = 'Something went wrong. Plea
     case 401:
       return 'Invalid credentials or session expired. Please log in again.';
     case 403:
+      if (data?.message?.includes('CORS')) {
+        return 'CORS blocked. On Render set FRONTEND_URL=https://shubham-hospital-management.netlify.app then redeploy.';
+      }
       return data?.message || 'You do not have permission to perform this action.';
     case 404:
       if (import.meta.env.PROD && !isProductionApi()) {
