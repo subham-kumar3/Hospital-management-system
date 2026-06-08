@@ -134,6 +134,20 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
+// Production CORS debug (for troubleshooting)
+app.get('/api/debug/cors', (req, res) => {
+  const { getAllowedOrigins } = require('./config/cors');
+  res.json({
+    success: true,
+    environment: process.env.NODE_ENV,
+    frontendUrl: process.env.FRONTEND_URL || '❌ NOT SET',
+    requestOrigin: req.headers.origin,
+    allowedOrigins: getAllowedOrigins(),
+    corsEnabled: getAllowedOrigins().length > 0,
+    message: getAllowedOrigins().length === 0 ? '⚠️ FRONTEND_URL not configured' : '✅ CORS configured'
+  });
+});
+
 // ============================================================================
 // ERROR HANDLING MIDDLEWARE
 // ============================================================================
